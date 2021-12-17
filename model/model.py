@@ -272,7 +272,6 @@ class Model(QObject):
         return gauss_img
 
     def center_of_mass(self, binary_img):
-        cv2.imwrite("deneme.jpg", utils.bool2rgb(binary_img))
         M = cv2.moments(binary_img.astype(np.uint8))
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
