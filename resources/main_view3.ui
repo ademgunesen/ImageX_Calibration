@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1281</width>
-    <height>722</height>
+    <width>1296</width>
+    <height>970</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,8 +26,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1271</width>
-      <height>651</height>
+      <width>1281</width>
+      <height>901</height>
      </rect>
     </property>
     <property name="font">
@@ -39,7 +39,7 @@
      <enum>Qt::TabFocus</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab_1">
      <property name="focusPolicy">
@@ -53,15 +53,9 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>571</width>
-        <height>461</height>
+        <width>1001</width>
+        <height>791</height>
        </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>1251</width>
-        <height>491</height>
-       </size>
       </property>
       <property name="font">
        <font>
@@ -79,15 +73,9 @@
         <rect>
          <x>0</x>
          <y>40</y>
-         <width>401</width>
-         <height>401</height>
+         <width>731</width>
+         <height>731</height>
         </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>1201</width>
-         <height>401</height>
-        </size>
        </property>
        <property name="font">
         <font>
@@ -113,8 +101,8 @@
       <widget class="QLabel" name="gif_1">
        <property name="geometry">
         <rect>
-         <x>440</x>
-         <y>50</y>
+         <x>760</x>
+         <y>40</y>
          <width>81</width>
          <height>81</height>
         </rect>
@@ -132,8 +120,8 @@
       <widget class="QLabel" name="progressing">
        <property name="geometry">
         <rect>
-         <x>440</x>
-         <y>150</y>
+         <x>870</x>
+         <y>70</y>
          <width>101</width>
          <height>31</height>
         </rect>
@@ -155,7 +143,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>480</y>
+        <y>800</y>
         <width>355</width>
         <height>44</height>
        </rect>
@@ -201,8 +189,8 @@
      <widget class="QProgressBar" name="progressBar">
       <property name="geometry">
        <rect>
-        <x>410</x>
-        <y>490</y>
+        <x>370</x>
+        <y>810</y>
         <width>321</width>
         <height>31</height>
        </rect>
@@ -1037,8 +1025,8 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>1150</x>
-        <y>500</y>
+        <x>550</x>
+        <y>470</y>
         <width>101</width>
         <height>31</height>
        </rect>
@@ -1051,7 +1039,7 @@
       <property name="geometry">
        <rect>
         <x>210</x>
-        <y>510</y>
+        <y>520</y>
         <width>91</width>
         <height>91</height>
        </rect>
@@ -1075,7 +1063,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1281</width>
+     <width>1296</width>
      <height>26</height>
     </rect>
    </property>
