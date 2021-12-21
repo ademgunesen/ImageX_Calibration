@@ -1,17 +1,9 @@
 import sys
-import os
-import time
-import numpy as np
 
-from PyQt5.Qt import *
-from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtGui import QIcon, QPixmap, QImage, QPainter, QPen, QMovie
-from PyQt5.QtCore import QPointF
-from threading import Thread
-from PIL import Image, ImageQt
+from PyQt5 import QtGui
+from PyQt5.QtGui import QPixmap, QMovie
 #importing necessary widgets
-from PyQt5.QtWidgets import (QMainWindow, QMessageBox, QApplication, QVBoxLayout,
-    QLabel, QPushButton, QWidget, QLineEdit, QTextEdit, QProgressBar,QFileDialog, QStyle, QAction)
+from PyQt5.QtWidgets import (QMainWindow, QMessageBox, QFileDialog, QStyle)
 #load view
 from views.main_view_ui3 import Ui_MainWindow
 
@@ -82,8 +74,8 @@ class MainView(QMainWindow):
 
         if path_name != '':
             self._ui.run_video.setEnabled(True)
-        #else:
-            #self.warningMsg()
+        else:
+            self.warningMsg()
 
         return path_name
 
@@ -230,6 +222,14 @@ class MainView(QMainWindow):
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Error")
         msg.setText("You have to select a VIDEO!")
+
+        x = msg.exec_()
+
+    def warningMsg(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle("Error")
+        msg.setText("Wrong path!")
 
         x = msg.exec_()
 
