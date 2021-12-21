@@ -1,5 +1,3 @@
-import time
-
 from numpy.lib.arraysetops import intersect1d
 import model.utils as utils
 
@@ -7,18 +5,11 @@ import model.utils as utils
 import os
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-import math
-from skimage.filters import median
 from skimage.morphology import disk, closing
-from time import sleep
 
 from PIL import Image, ImageQt
 
-from threading import Thread
 from PyQt5.QtCore import QObject
-from PyQt5 import QtGui
-from PyQt5.QtGui import QPixmap, QImage, QMovie
 
 class Model(QObject):
     def __init__(self, controller):
@@ -145,7 +136,6 @@ class Model(QObject):
         ref_px21, ref_py21 = self.center_of_mass(im21)
         ref_px22, ref_py22 = self.center_of_mass(im22)
 
-        #utils.show_images([im00,im01,im02,im10,im11,im12,im20,im21,im22])
         ref_p00 = (ref_px00, ref_py00)
         ref_p01 = (midpx-v + ref_px01, ref_py01)
         ref_p02 = (width-w + ref_px02, ref_py02)
@@ -185,7 +175,6 @@ class Model(QObject):
         self.drawing_img = utils.show_images_in_designer(drawing_img)
         #cv2.imwrite(os.path.join(self.path, "ref_point_images.jpg"), drawing_img.astype(np.uint8))
         self._controller.show_second_image()
-        #utils.show_images([drawing_img])
         return drawing_img, intersect1, intersect2
     
     def sum_video(self, Path , exp_t, beam_tresh):
@@ -259,10 +248,8 @@ class Model(QObject):
     
     def enhance_sphere(self, image):
         median_img = cv2.medianBlur(image, 3)
-        #utils.show_images([median_img])
         closed_img = closing(median_img, disk(40))
         gauss_img = cv2.GaussianBlur(closed_img,(11,11),cv2.BORDER_DEFAULT)
-        #utils.show_images([image, median_img, closed_img, gauss_img])
         return gauss_img
         
     def enhance_refs(self, image):
