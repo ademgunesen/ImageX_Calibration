@@ -1,11 +1,7 @@
 import cv2
-import os
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from skimage.filters import median
-from skimage.morphology import disk
-import time
 import pickle
 from PyQt5 import QtGui
 from PyQt5.QtGui import QPixmap
@@ -39,19 +35,12 @@ def show_images(images: list, titles: list="Untitled	", colorScale='gray', figna
 	plt.savefig(figname + '.png')
 	plt.show(block=True)
 
-def save_image(self, image):
-        """
-        seçilen videonun sonunda elde edilen imageın kaydedilmesi
-        """
-        cv2.imwrite(os.path.join(self.path, "beam_sum.jpg"), self.beam_sum_img.astype(np.uint8))
-        self._controller.show_beam_sum_image()
-
 def show_images_in_designer(image):
 	h, w, ch = image.shape
 	bytes_per_line = ch * w
 	p = QtGui.QImage(image.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
 	image = QPixmap.fromImage(p)
-	return image  
+	return image 
 
 def bool2rgb(bool_img):
     h=bool_img.shape[0]
