@@ -1,10 +1,9 @@
 import sys
-from model.model import Model
 from controllers.main_ctrl import MainController
-from views.main_view import MainView
 
 from PyQt5.QtWidgets import QApplication
 
+#script from which the application is run 
 class App(QApplication):
     def __init__(self, sys_argv):
         super(App, self).__init__(sys_argv)
