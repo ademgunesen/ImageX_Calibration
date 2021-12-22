@@ -62,7 +62,7 @@ class MainController(QObject):
         Getting the value selected from the Execute->threshold section
         """
         self._view.start_gif()
-        self._view.start_animation()
+        self._view.start_gif2_animation()
         threshold_thread = threading.Thread(target = self._model.threshold_thread, args=(seg_tresh,))#thread for threshold
         threshold_thread.start()
 
@@ -71,7 +71,7 @@ class MainController(QObject):
         Images obtained after threshold is set are displayed in view
         """
         self._view.show_thresh_images()
-        self._view.stop_animation()
+        self._view.stop_gif2_animation()
     
     def show_first_image(self):
         """
