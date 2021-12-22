@@ -1,5 +1,4 @@
 import sys
-
 from PyQt5 import QtGui
 from PyQt5.QtGui import QPixmap, QMovie
 #importing necessary widgets
@@ -14,7 +13,8 @@ class MainView(QMainWindow):
         Defining and linking widgets that require action that appear in the gui
         """
         super().__init__()
-
+        
+        #view controller connection 
         self._controller = controller
 
         self._ui = Ui_MainWindow()
@@ -39,23 +39,29 @@ class MainView(QMainWindow):
         self._ui.action75.triggered.connect(lambda: self._controller.thresh_image_controller(75))
         self._ui.action80.triggered.connect(lambda: self._controller.thresh_image_controller(80))
 
+        #for the application to start from the video page
         self._ui.tabwidget.setCurrentIndex(0)
         self._ui.progressBar.hide()
     
         #define gift path
-        self.movie = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
+        self.movie1 = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
+        self.movie2 = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
 
-    # Start Animation
-    def start_animation(self):
-        self.movie.start()
+    # Start Gif Animation
+    def start_gi1_animation(self):
+        self.movie1.start()
+    def start_gif2_animation(self):
+        self.movie2.start()
   
-    # Stop Animation
-    def stop_animation(self):
-        self.movie.stop()
+    # Stop Gif Animation
+    def stop_gif1_animation(self):
+        self.movie1.stop()
+    def stop_gif2_animation(self):
+        self.movie2.stop()
 
     def select_video(self):
         """
-        select butonun basılınca ekranda değişmesi gereken şeyleri gösteriyor
+        When you press the select button, it shows the things that need to be changed on the screen.            
         """
         #self._ui.progressBar.setValue(0)
 
@@ -74,14 +80,14 @@ class MainView(QMainWindow):
 
         if path_name != '':
             self._ui.run_video.setEnabled(True)
-        else:
-            self.warningMsg()
+        #else:
+            #self.warningMsg()
 
         return path_name
 
     def play_video(self):
         """
-        run butonun basılınca ilk başta ekranda değişmesi gereken şeyleri gösteriyor
+        When the run button is pressed, it first shows the things that need to be changed on the screen
         """
         self._ui.stop_video.setEnabled(True)
         self._ui.run_video.setEnabled(False)
@@ -94,7 +100,7 @@ class MainView(QMainWindow):
 
     def show_video_images(self):
         """
-        run butonun basılınca en son olarak ekranda değişmesi gereken şeyleri gösteriyor
+        When the run button is pressed, it shows the last things that need to be changed on the screen.
         """
         self._ui.execute.setEnabled(True)
         self._ui.progressing.setText("Completed!")
@@ -110,14 +116,15 @@ class MainView(QMainWindow):
         self._ui.stop_video.setEnabled(False)   
 
     def set_progresbar(self, count):
-        
+        """
+        Written for progress bar but not used
+        """
         self._ui.progressBar.setValue(count)
                 
     def stop_video(self):
         """
-        stop butonuna basılnca ekranda değişmesi gereken şeyleri gösteriyor
+        It shows the things that need to change on the screen when the stop button is pressed.
         """
-        #self._ui.progressBar.setValue(0)
         self._ui.progressing.setText("Stopped!")
 
         self._ui.select_video.setEnabled(True)
@@ -134,7 +141,7 @@ class MainView(QMainWindow):
 
     def show_thresh_images(self):
         """
-        seçilen threahold değerine göre image ve değerler gösteriliyor
+        Displaying images and values according to the selected threshold value
         """
         self._ui.clear.setEnabled(True)
         
@@ -167,22 +174,19 @@ class MainView(QMainWindow):
 
     def show_first_thresh_image(self):
         """
-        seçilen videodaki ilk framei ekranda gösteriyor
+        the first frame in the selected video is displayed on the screen
         """
         self._ui.player.setPixmap(self._controller.get_first_frame())
 
     def show_second_image(self):
+        """
+        Displaying the picture where the points are combined with a line after the points determined in the first frame are determined
+        """
         self._ui.player.setPixmap(self._controller.get_second_frame())
         
     def clear_all_results(self):
         """
-        clear butonuna basılınca ekrandaki değerlerin temizlenmesi
-        """
-        #for dot pixels
-        """
-        self._ui.dot_pixel_1.hide()
-        self._ui.dot_pixel_2.hide()
-        self._ui.dot_pixel_3.hide()
+        Clearing the values on the screen when the clear button is pressed 
         """
         #images
         self._ui.g_image_3.clear()
