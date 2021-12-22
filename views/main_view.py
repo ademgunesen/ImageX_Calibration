@@ -48,7 +48,7 @@ class MainView(QMainWindow):
         self.movie2 = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
 
     # Start Gif Animation
-    def start_gi1_animation(self):
+    def start_gif1_animation(self):
         self.movie1.start()
     def start_gif2_animation(self):
         self.movie2.start()
@@ -94,9 +94,9 @@ class MainView(QMainWindow):
         self._ui.select_video.setEnabled(False)
         self._ui.progressing.setText("Executing!")
 
-        self._ui.gif_1.setMovie(self.movie)
+        self._ui.gif_1.setMovie(self.movie1)
 
-        self.start_animation()
+        self.start_gif1_animation()
 
     def show_video_images(self):
         """
@@ -104,7 +104,7 @@ class MainView(QMainWindow):
         """
         self._ui.execute.setEnabled(True)
         self._ui.progressing.setText("Completed!")
-        self.stop_animation()
+        self.stop_gif1_animation()
 
         self._ui.tabwidget.setCurrentIndex(1)
 
@@ -134,10 +134,10 @@ class MainView(QMainWindow):
         self._ui.g_image_1.clear()
         self._ui.g_image_2.clear()
 
-        self.stop_animation()
+        self.stop_gif1_animation()
 
     def start_gif(self):
-        self._ui.gif_2.setMovie(self.movie)
+        self._ui.gif_2.setMovie(self.movie2)
 
     def show_thresh_images(self):
         """
