@@ -1,4 +1,3 @@
-from numpy.lib.arraysetops import intersect1d
 import model.utils as utils
 
 #frame_sum
@@ -15,7 +14,7 @@ class Model(QObject):
     def __init__(self, controller):
         super().__init__()
         """
-        kullanılan bütün değişkenlerin tanımlanması
+        definition of all variables used
         """
         self._controller = controller
 
@@ -47,7 +46,7 @@ class Model(QObject):
 
     def frame_sum_thread(self):
         """
-        sumVideo uzun sürdüğü için thread üzerinden çağırılıyor ve beam_sum elde ediliyor
+        Since sum_video takes a long time, it is called from the thread and beam_sum is obtained
         """
         self.beam_sum, intersect1, intersect2, drawing_img = self.sum_video(self.Path, self.exp_t, self.beam_tresh)
         self.planned_center = tuple(0.5*np.array(intersect1) + 0.5*np.array(intersect2))
@@ -55,14 +54,14 @@ class Model(QObject):
 
     def threshold_thread(self, seg_tresh):
         """
-        segmentation uzun sürdüğü için thread üzerinden çağırılıyor ve ind, binay_img elde ediliyor
+        Since segmentation takes a long time and there is a crashing problem in the application, it is called from the thread and ind, binay_img are obtained. 
         """
         self.ind, self.binary_img, enhanced_img = self.segmentation_using_com(self.beam_sum, seg_tresh) 
         self.calculate_xy_img()
         
     def calculate_xy_img(self):
         """
-        ind, x_mm, y_mm ve threshli image elde ediliyor
+        Obtaining ind, x_mm, y_mm and threshold image
         """
         binary_img_array = Image.fromarray(self.binary_img)
         self.binary_img_qt = ImageQt.ImageQt(binary_img_array)
@@ -74,7 +73,7 @@ class Model(QObject):
 
     def stop_flag(self):
         """
-        stop butonun basılınca durması için flag değiştiriliyor
+        Changing the flag to stop when the stop button is pressed
         """
         self.running = False
 
@@ -90,7 +89,7 @@ class Model(QObject):
 
     def first_video_image(self, Path):
         """
-        seçilen videonun ilk frameini buluyor
+        finds the first frame of the selected video
         """
         vidObj = cv2.VideoCapture(Path)
         success, image = vidObj.read()
