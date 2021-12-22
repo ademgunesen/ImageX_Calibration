@@ -27,7 +27,7 @@ class MainController(QObject):
         self._model.set_path(path_name)
 
         if path_name == '':
-            self._view.close_app()
+            self._view.warning_video()
         else:
             self._model.first_video_image(path_name)
 
