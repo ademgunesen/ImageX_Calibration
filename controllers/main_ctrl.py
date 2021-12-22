@@ -10,17 +10,20 @@ from PyQt5.QtCore import QObject
 class MainController(QObject):
     def __init__(self):
         super().__init__()
-
+        """
+        connecting from controller to view and model
+        """
         self._model = Model(self)
         self._view = MainView(self)
         self._view.show()
 
     def select_video_controller(self):
-    
+        """
+        After clicking the select video button, it takes the path of the video from the view and finds the path of the file as the path.
+        """
         self._model.running = True
 
         path_name = self._view.select_video()
-
         self._model.set_path(path_name)
 
         if path_name == '':
@@ -29,7 +32,9 @@ class MainController(QObject):
             self._model.first_video_image(path_name)
 
     def play_video_controller(self):
-        
+        """
+        After pressing the run button, it creates a thread to run the sum_video in the model, then goes to the view and shows the results.
+        """
         if self._model.running == False:
             self._model.reset_video_variables()
         else:
@@ -38,35 +43,46 @@ class MainController(QObject):
             self._view.play_video()
 
     def show_beam_sum_image(self):
-        
+        """
+        Shows the images returned as a result of pressing the run button.
+        """
         self._view.show_video_images()
 
     def stop_video_controller(self):
-        
+        """
+        It makes the video stop when the stop button is pressed.
+        """
         self._model.stop_flag()
         if self._model.running == False:
             self._view.stop_video()
             self._model.reset_video_variables()
 
     def thresh_image_controller(self, seg_tresh):
-        
+        """
+        Getting the value selected from the Execute->threshold section
+        """
         self._view.start_gif()
         self._view.start_animation()
         threshold_thread = threading.Thread(target = self._model.threshold_thread, args=(seg_tresh,))#thread for threshold
         threshold_thread.start()
-        
 
     def thresh_image_results(self):
-
+        """
+        Images obtained after threshold is set are displayed in view
+        """
         self._view.show_thresh_images()
         self._view.stop_animation()
     
     def show_first_image(self):
-        
+        """
+        the first frame view in the video is also shown
+        """
         self._view.show_first_thresh_image()
     
     def show_second_image(self):
-
+        """
+        The image showing the intersections of the points of the lines obtained by combining the points in the first frame.
+        """
         self._view.show_second_image()
 
     #GET FUNCTIONS
