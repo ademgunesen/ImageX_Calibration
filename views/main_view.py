@@ -48,14 +48,16 @@ class MainView(QMainWindow):
         self.movie2 = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
 
     # Start Gif Animation
-    def start_gif1_animation(self):
+    def start_gif1_animation(self):        
         self.movie1.start()
+
     def start_gif2_animation(self):
         self.movie2.start()
   
     # Stop Gif Animation
     def stop_gif1_animation(self):
         self.movie1.stop()
+
     def stop_gif2_animation(self):
         self.movie2.stop()
 
@@ -137,6 +139,9 @@ class MainView(QMainWindow):
         self.stop_gif1_animation()
 
     def start_gif(self):
+        """
+        start gif animation in result page
+        """
         self._ui.gif_2.setMovie(self.movie2)
 
     def show_thresh_images(self):
@@ -213,7 +218,7 @@ class MainView(QMainWindow):
 
         self._ui.clear.setEnabled(False)
 
-    def display_message(self):
+    def warning_(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Error")
@@ -221,7 +226,7 @@ class MainView(QMainWindow):
 
         x = msg.exec_()
 
-    def warning_message(self):
+    def warning_video(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Error")
@@ -229,7 +234,7 @@ class MainView(QMainWindow):
 
         x = msg.exec_()
 
-    def warningMsg(self):
+    def warning_path(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Error")
@@ -244,10 +249,19 @@ class MainView(QMainWindow):
 
     def close_app(self):
         reply = QMessageBox.question(self, "Window Close", "Are you sure you want to close the window?",
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                                    QMessageBox.Yes | QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             sys.exit()
             
         else:
             pass
+    
+    def closeEvent(self, event):
+            close = QMessageBox.question(self, "QUIT",
+                                         "Are you sure want to stop process?",
+                                         QMessageBox.Yes | QMessageBox.No)
+            if close == QMessageBox.Yes:
+                event.accept()
+            else:
+                event.ignore()
