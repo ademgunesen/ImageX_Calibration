@@ -23,7 +23,9 @@ class MainView(QMainWindow):
         # click buttons & connect widgets to controller
         self._ui.select_video.clicked.connect(self._controller.select_video_controller)
         self._ui.run_video.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self._ui.run_video.clicked.connect(self._controller.play_video_controller)
+        self._ui.run_video.clicked.connect(lambda: self._controller.play_video_controller(self._ui.combo_box_3.currentText(),
+                                                                                        self._ui.combo_box_1.currentText(),
+                                                                                        self._ui.combo_box_2.currentText()))
         self._ui.stop_video.setIcon(self.style().standardIcon(QStyle.SP_MediaStop))
         self._ui.stop_video.clicked.connect(self._controller.stop_video_controller)
         self._ui.clear.clicked.connect(self.clear_all_results)   
@@ -42,23 +44,37 @@ class MainView(QMainWindow):
         #for the application to start from the video page
         self._ui.tabwidget.setCurrentIndex(0)
         self._ui.progressBar.hide()
+        #set default variables
+        self._ui.combo_box_1.setCurrentIndex(4)
+        self._ui.combo_box_2.setCurrentIndex(5)
+        self._ui.combo_box_3.setCurrentIndex(1)
     
         #define gift path
         self.movie1 = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
         self.movie2 = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
 
-    # Start Gif Animation
-    def start_gif1_animation(self):        
+    def start_gif1_animation(self):   
+        """
+        Start Gif Animation
+        """     
         self.movie1.start()
 
     def start_gif2_animation(self):
+        """
+        Start Gif Animation
+        """ 
         self.movie2.start()
   
-    # Stop Gif Animation
     def stop_gif1_animation(self):
+        """
+        Start Gif Animation
+        """ 
         self.movie1.stop()
 
     def stop_gif2_animation(self):
+        """
+        Start Gif Animation
+        """ 
         self.movie2.stop()
 
     def select_video(self):
@@ -73,10 +89,10 @@ class MainView(QMainWindow):
         self._ui.g_image_4.clear()
         self._ui.player.clear()
 
-        self._ui.T1_label_5.clear()
-        self._ui.T1_label_6.clear()
-        self._ui.T2_label_5.clear()
-        self._ui.T2_label_6.clear()
+        self._ui.T1_label_3.clear()
+        self._ui.T1_label_4.clear()
+        self._ui.T2_label_3.clear()
+        self._ui.T2_label_4.clear()
 
         path_name, _ = QFileDialog.getOpenFileName(self,"Video Files")
 
@@ -97,7 +113,7 @@ class MainView(QMainWindow):
         self._ui.progressing.setText("Executing!")
 
         self._ui.gif_1.setMovie(self.movie1)
-
+    
         self.start_gif1_animation()
 
     def show_video_images(self):
@@ -154,28 +170,20 @@ class MainView(QMainWindow):
         self._ui.g_image_4.setPixmap(QPixmap.fromImage(self._controller.get_binary_img()))
 
         #image1 Threshold Results
-        self._ui.T1_label_5.setText(str(self._controller.get_x_mm()))
-        self._ui.T1_label_6.setText(str(self._controller.get_y_mm()))
-
-        self._ui.T2_label_5.setText(str(self._controller.get_x_mm()))
-        self._ui.T2_label_6.setText(str(self._controller.get_y_mm()))
-
-        """
-        self._ui.T1_label_7.setText(str(self._controller.get_x_mm()))
-        self._ui.T1_label_8.setText(str(self._controller.get_x_mm()))
-
+        self._ui.T1_label_3.setText(str(self._controller.get_y_mm()) + 'mm')
+        self._ui.T1_label_4.setText(str(self._controller.get_x_mm()) + 'mm')
         #image2 Trhreshold Results
-
-        self._ui.T2_label_7.setText(str(self._controller.get_x_mm()))
-        self._ui.T2_label_8.setText(str(self._controller.get_x_mm()))
-
+        self._ui.T2_label_3.setText(str(self._controller.get_y_mm())+ 'mm')
+        self._ui.T2_label_4.setText(str(self._controller.get_x_mm())+ 'mm')
+        #error
         self._ui.ei_label_1.setText(str(self._controller.get_x_mm()))
-        self._ui.ei_label_2.setText(str(self._controller.get_x_mm()))
+        self._ui.ei_label_2.setText(str(self._controller.get_y_mm()))
         self._ui.ei_label_3.setText(str(self._controller.get_x_mm()))
-        self._ui.ei_label_4.setText(str(self._controller.get_x_mm()))
-        self._ui.ei_label_5.setText(str(self._controller.get_x_mm()))
-        self._ui.ei_label_6.setText(str(self._controller.get_x_mm()))
-        """
+        self._ui.ei_label_4.setText(str(self._controller.get_y_mm()))
+        #average anterior error
+        self._ui.ei_label_5.setText(str(self._controller.get_avr_ant_err()))
+        #total target error (pisagor)
+        self._ui.ei_label_6.setText(str(self._controller.get_targetting_err()))
 
     def show_first_thresh_image(self):
         """
@@ -198,16 +206,12 @@ class MainView(QMainWindow):
         self._ui.g_image_4.clear()
 
         #image1 Threshold Results
-        self._ui.T1_label_5.clear()
-        self._ui.T1_label_6.clear()
-        self._ui.T1_label_7.clear()
-        self._ui.T1_label_8.clear()
+        self._ui.T1_label_3.clear()
+        self._ui.T1_label_4.clear()
 
         #image2 Trhreshold Results
-        self._ui.T2_label_5.clear()
-        self._ui.T2_label_6.clear()
-        self._ui.T2_label_7.clear()
-        self._ui.T2_label_8.clear()
+        self._ui.T2_label_3.clear()
+        self._ui.T2_label_4.clear()
 
         self._ui.ei_label_1.clear()
         self._ui.ei_label_2.clear()
@@ -218,13 +222,14 @@ class MainView(QMainWindow):
 
         self._ui.clear.setEnabled(False)
 
-    def warning_(self):
+    def warning_video_taken(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Error")
-        msg.setText("You have to select and run a video!")
+        msg.setText("Points not detected, new video should be taken!")
 
         x = msg.exec_()
+        self.close_app()
 
     def warning_video(self):
         msg = QMessageBox()
