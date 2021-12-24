@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1296</width>
+    <width>1173</width>
     <height>970</height>
    </rect>
   </property>
@@ -26,7 +26,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1281</width>
+      <width>1161</width>
       <height>901</height>
      </rect>
     </property>
@@ -53,7 +53,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1001</width>
+        <width>1061</width>
         <height>791</height>
        </rect>
       </property>
@@ -138,6 +138,234 @@
         <string/>
        </property>
       </widget>
+      <widget class="QComboBox" name="combo_box_1">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>180</y>
+         <width>91</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <item>
+        <property name="text">
+         <string>1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>3</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>4</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>6</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>7</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>8</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>9</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>10</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="label_1">
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>140</y>
+         <width>271</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Select Beam Threshod</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="combo_box_2">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>280</y>
+         <width>91</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <item>
+        <property name="text">
+         <string>150</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>160</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>170</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>180</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>190</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>200</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>210</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>220</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>230</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>240</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>250</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>230</y>
+         <width>281</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Select Referans Point Threshod</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="combo_box_3">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>380</y>
+         <width>91</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <item>
+        <property name="text">
+         <string>51</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>100</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>250</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="label_3">
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>330</y>
+         <width>281</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Select Exposure Time</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
@@ -210,8 +438,8 @@
      <widget class="QGroupBox" name="ErrorGroupBox">
       <property name="geometry">
        <rect>
-        <x>870</x>
-        <y>120</y>
+        <x>750</x>
+        <y>390</y>
         <width>391</width>
         <height>221</height>
        </rect>
@@ -359,7 +587,7 @@
         <string/>
        </property>
        <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
       <widget class="QLabel" name="ei_label_2">
@@ -386,10 +614,10 @@
         <string/>
        </property>
        <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="ei_label_3">
+      <widget class="QLabel" name="ei_label_4">
        <property name="geometry">
         <rect>
          <x>300</x>
@@ -413,10 +641,10 @@
         <string/>
        </property>
        <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="ei_label_4">
+      <widget class="QLabel" name="ei_label_3">
        <property name="geometry">
         <rect>
          <x>300</x>
@@ -440,10 +668,10 @@
         <string/>
        </property>
        <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="ei_label_5">
+      <widget class="QLabel" name="ei_label_6">
        <property name="geometry">
         <rect>
          <x>300</x>
@@ -467,7 +695,7 @@
         <string/>
        </property>
       </widget>
-      <widget class="QLabel" name="ei_label_6">
+      <widget class="QLabel" name="ei_label_5">
        <property name="geometry">
         <rect>
          <x>300</x>
@@ -497,8 +725,8 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>231</width>
-        <height>241</height>
+        <width>361</width>
+        <height>361</height>
        </rect>
       </property>
       <property name="font">
@@ -532,9 +760,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>260</y>
-        <width>231</width>
-        <height>241</height>
+        <y>380</y>
+        <width>361</width>
+        <height>361</height>
        </rect>
       </property>
       <property name="font">
@@ -567,10 +795,10 @@
      <widget class="QGroupBox" name="groupBox_4">
       <property name="geometry">
        <rect>
-        <x>280</x>
+        <x>380</x>
         <y>10</y>
-        <width>231</width>
-        <height>241</height>
+        <width>361</width>
+        <height>361</height>
        </rect>
       </property>
       <property name="font">
@@ -603,10 +831,10 @@
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>280</x>
-        <y>260</y>
-        <width>231</width>
-        <height>241</height>
+        <x>380</x>
+        <y>380</y>
+        <width>361</width>
+        <height>361</height>
        </rect>
       </property>
       <property name="font">
@@ -639,10 +867,10 @@
      <widget class="QGroupBox" name="groupBox_6">
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>270</y>
+        <x>800</x>
+        <y>220</y>
         <width>301</width>
-        <height>161</height>
+        <height>121</height>
        </rect>
       </property>
       <property name="font">
@@ -659,149 +887,63 @@
          <x>10</x>
          <y>30</y>
          <width>121</width>
-         <height>21</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>Centroid Area:</string>
+        <string>Anterior</string>
        </property>
       </widget>
       <widget class="QLabel" name="T2_label_2">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>60</y>
+         <y>70</y>
          <width>121</width>
-         <height>21</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>Pixels to Left:</string>
+        <string>Superior</string>
        </property>
       </widget>
       <widget class="QLabel" name="T2_label_3">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>90</y>
-         <width>121</width>
-         <height>21</height>
+         <x>180</x>
+         <y>30</y>
+         <width>101</width>
+         <height>31</height>
         </rect>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
        <property name="text">
-        <string>Pixels to Top:</string>
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignBottom|Qt::AlignJustify</set>
        </property>
       </widget>
       <widget class="QLabel" name="T2_label_4">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>120</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Eccentricity:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="T2_label_5">
-       <property name="geometry">
-        <rect>
-         <x>190</x>
-         <y>30</y>
-         <width>91</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="T2_label_7">
-       <property name="geometry">
-        <rect>
-         <x>190</x>
-         <y>90</y>
-         <width>91</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="T2_label_6">
-       <property name="geometry">
-        <rect>
-         <x>190</x>
-         <y>60</y>
-         <width>91</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="T2_label_8">
-       <property name="geometry">
-        <rect>
-         <x>190</x>
-         <y>120</y>
-         <width>91</width>
-         <height>21</height>
+         <x>180</x>
+         <y>70</y>
+         <width>101</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -829,10 +971,10 @@
      <widget class="QGroupBox" name="groupBox_5">
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>40</y>
+        <x>800</x>
+        <y>70</y>
         <width>301</width>
-        <height>151</height>
+        <height>131</height>
        </rect>
       </property>
       <property name="font">
@@ -847,61 +989,35 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>30</y>
+         <y>40</y>
          <width>121</width>
-         <height>21</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>Centroid Area:</string>
+        <string>Anterior</string>
        </property>
       </widget>
       <widget class="QLabel" name="T1_label_2">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>60</y>
+         <y>80</y>
          <width>121</width>
-         <height>21</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
-        <string>Pixels to Left:</string>
+        <string>Left</string>
        </property>
       </widget>
       <widget class="QLabel" name="T1_label_3">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>90</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Pixels to Top:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="T1_label_4">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>120</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Eccentricity:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="T1_label_5">
-       <property name="geometry">
-        <rect>
-         <x>190</x>
-         <y>30</y>
-         <width>91</width>
-         <height>21</height>
+         <x>180</x>
+         <y>40</y>
+         <width>101</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -922,19 +1038,19 @@
         <string/>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignJustify</set>
        </property>
       </widget>
-      <widget class="QLabel" name="T1_label_7">
+      <widget class="QLabel" name="T1_label_4">
        <property name="geometry">
         <rect>
-         <x>190</x>
-         <y>90</y>
-         <width>91</width>
-         <height>21</height>
+         <x>180</x>
+         <y>80</y>
+         <width>101</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -954,65 +1070,8 @@
        <property name="text">
         <string/>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="T1_label_6">
-       <property name="geometry">
-        <rect>
-         <x>190</x>
-         <y>60</y>
-         <width>91</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="autoFillBackground">
+       <property name="scaledContents">
         <bool>true</bool>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignJustify</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="T1_label_8">
-       <property name="geometry">
-        <rect>
-         <x>190</x>
-         <y>120</y>
-         <width>91</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="text">
-        <string/>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignJustify</set>
@@ -1025,8 +1084,8 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>470</y>
+        <x>900</x>
+        <y>640</y>
         <width>101</width>
         <height>31</height>
        </rect>
@@ -1038,8 +1097,8 @@
      <widget class="QLabel" name="gif_2">
       <property name="geometry">
        <rect>
-        <x>210</x>
-        <y>520</y>
+        <x>320</x>
+        <y>760</y>
         <width>91</width>
         <height>91</height>
        </rect>
@@ -1063,7 +1122,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1296</width>
+     <width>1173</width>
      <height>26</height>
     </rect>
    </property>
@@ -1071,7 +1130,7 @@
     <property name="font">
      <font>
       <family>MS Shell Dlg 2</family>
-      <pointsize>14</pointsize>
+      <pointsize>9</pointsize>
      </font>
     </property>
     <property name="title">
@@ -1106,14 +1165,14 @@
     <property name="title">
      <string>Image 1</string>
     </property>
-    <addaction name="actionSuperior_Anterior_Image1"/>
-    <addaction name="actionLeft_Anterior_Image1"/>
+    <addaction name="action_superior_anterior_image1"/>
+    <addaction name="action_left_anterior_image1"/>
    </widget>
    <widget class="QMenu" name="menuImage_2">
     <property name="title">
      <string>Image 2</string>
     </property>
-    <addaction name="actionSuperior_Anterior_Image_2"/>
+    <addaction name="action_superior_anterior_image_2"/>
     <addaction name="actionLeft_Anterior_Image2"/>
    </widget>
    <addaction name="menuFile"/>
@@ -1176,15 +1235,15 @@
     <string>80%</string>
    </property>
   </action>
-  <action name="actionSuperior_Anterior_Image1">
+  <action name="action_superior_anterior_image1">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Superior/Anterior Image</string>
    </property>
   </action>
-  <action name="actionLeft_Anterior_Image1">
+  <action name="action_left_anterior_image1">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1192,9 +1251,9 @@
     <string>Left/Anterior Image</string>
    </property>
   </action>
-  <action name="actionSuperior_Anterior_Image_2">
+  <action name="action_superior_anterior_image_2">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Superior/Anterior Image</string>
