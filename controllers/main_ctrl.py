@@ -1,6 +1,9 @@
+#from _typeshed import Self
 import threading
 import time
 import os
+
+from numpy.lib.function_base import select
 
 from model.model import Model
 from views.main_view import MainView
@@ -26,27 +29,29 @@ class MainController(QObject):
         path_name = self._view.select_video()
         self._model.set_path(path_name)
 
-        if path_name == '':
-            self._view.warning_video()
-        else:
+        if path_name == self._model.Path:
             self._model.first_video_image(path_name)
+        else:
+            self._view.warning_video()
 
-    def play_video_controller(self):
+    def play_video_controller(self, exp_time, beam_thresh, ref_point_thresh):
         """
         After pressing the run button, it creates a thread to run the sum_video in the model, then goes to the view and shows the results.
-        """
+        """        
+        video_thread = threading.Thread(target = self._model.frame_sum_thread, args=(exp_time, beam_thresh, ref_point_thresh,))#thread for frame_sum
+        video_thread.start()
+        self._view.play_video()
+        #if self._model.running == False:
+            #self._model.reset_video_variables()
         if self._model.running == False:
-            self._model.reset_video_variables()
-        else:
-            video_thread = threading.Thread(target = self._model.frame_sum_thread)#thread for frame_sum
-            video_thread.start()
-            self._view.play_video()
+            self.warning_video_taken()
 
     def show_beam_sum_image(self):
         """
         Shows the images returned as a result of pressing the run button.
         """
-        self._view.show_video_images()
+        if self._model.beam_sum_img != None:
+            self._view.show_video_images()
 
     def stop_video_controller(self):
         """
@@ -85,12 +90,25 @@ class MainController(QObject):
         """
         self._view.show_second_image()
 
+    def warning_video_taken(self):
+        """
+        If the function cannot find the points in the first 5 seconds, it prints a warning in the view and shot down the application.
+        """
+        self._view.warning_video_taken()
+        #self._view.close_app()
+
     #GET FUNCTIONS
     def get_x_mm(self):
         return self._model.x_mm
 
     def get_y_mm(self):
         return self._model.y_mm
+
+    def get_avr_ant_err(self):
+        return self._model.avr_ant_err
+
+    def get_targetting_err(self):
+        return self._model.target_err
 
     def get_success(self):
         return self._model.success
