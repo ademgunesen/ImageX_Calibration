@@ -1,6 +1,7 @@
 import model.utils as utils
 
 #frame_sum
+import math 
 import os
 import cv2
 import numpy as np
@@ -9,7 +10,7 @@ from skimage.morphology import disk, closing
 from PIL import Image, ImageQt
 
 from PyQt5.QtCore import QObject
-
+my_formatter = "{0:.2f}"
 class Model(QObject):
     def __init__(self, controller):
         super().__init__()
@@ -22,8 +23,8 @@ class Model(QObject):
         self.Path = ' '
         self.path = ' '
         self.file_name = ' '
-        self.exp_t = 100
-        self.beam_tresh = 8
+        self.exp_time = 0
+        self.beam_thresh = 0
 
         self.beam_sum = 0
         self.beam_sum_img = 0
@@ -36,6 +37,8 @@ class Model(QObject):
         self.planned_center = 0
         self.x_mm = 0
         self.y_mm = 0
+        self.avr_ant_err = 0
+        self.target_err = 0
 
         self.count = 0
 
@@ -44,11 +47,11 @@ class Model(QObject):
 
         self.running = True
 
-    def frame_sum_thread(self):
+    def frame_sum_thread(self, exp_time, beam_thresh, ref_point_thresh):
         """
         Since sum_video takes a long time, it is called from the thread and beam_sum is obtained
         """
-        self.beam_sum, intersect1, intersect2, drawing_img = self.sum_video(self.Path, self.exp_t, self.beam_tresh)
+        self.beam_sum, intersect1, intersect2, drawing_img = self.sum_video(self.Path, exp_time, beam_thresh, ref_point_thresh)
         self.planned_center = tuple(0.5*np.array(intersect1) + 0.5*np.array(intersect2))
         self.stop_flag()
 
@@ -66,10 +69,33 @@ class Model(QObject):
         binary_img_array = Image.fromarray(self.binary_img)
         self.binary_img_qt = ImageQt.ImageQt(binary_img_array)
 
-        self.x_mm = self.pixels_to_mm(self.planned_center[0]-self.ind[0])
-        self.y_mm = self.pixels_to_mm(self.planned_center[1]-self.ind[1])
+        x_mm = self.pixels_to_mm(self.planned_center[0]-self.ind[0])
+        y_mm = self.pixels_to_mm(self.planned_center[1]-self.ind[1])
+
+        #self.average_anterior_err(y_mm, y_mm)
+        self.targetting_err(x_mm, x_mm, y_mm) 
+
+        self.x_mm = my_formatter.format(x_mm)
+        self.y_mm = my_formatter.format(y_mm)
 
         self._controller.thresh_image_results()  
+
+    def average_anterior_err(self, y1, y2):
+        """
+        calculate average anterior error
+        """
+        avr_ant_err =  (y1 + y2)/2
+        self.avr_ant_err = my_formatter.format(avr_ant_err)
+        return avr_ant_err
+       
+    def targetting_err(self, x, y, z):
+        """
+        total targetting error (x2+y2+z2)kök
+        """
+        avr_ant_err = self.average_anterior_err(z, z)
+        z = avr_ant_err
+        target_err = (math.sqrt(pow(x, 2)+pow(y, 2)+pow(z, 2)))
+        self.target_err = my_formatter.format(target_err)
 
     def stop_flag(self):
         """
@@ -164,10 +190,10 @@ class Model(QObject):
         utils.draw_ref_point(drawing_img,intersect2)	
         return drawing_img, intersect1, intersect2
 
-    def find_and_draw_ref_points(self, ref_img, count):
+    def find_and_draw_ref_points(self, ref_img, count, ref_point_thresh):
         ref_img_norm = (1/count)*ref_img
         ref_img_enhanced = self.enhance_refs(ref_img_norm)
-        ref_img_binary = ref_img_enhanced > 150
+        ref_img_binary = ref_img_enhanced > int(ref_point_thresh)
         ref_points = self.find_ref_points(ref_img_binary)
         drawing_img = self.draw_ref_points(ref_img_binary,ref_points)
         drawing_img, intersect1, intersect2 = self.draw_ref_lines(drawing_img,ref_points)
@@ -176,7 +202,7 @@ class Model(QObject):
         self._controller.show_second_image()
         return drawing_img, intersect1, intersect2
     
-    def sum_video(self, Path , exp_t, beam_tresh):
+    def sum_video(self, Path , exp_time, beam_thresh, ref_point_thresh):
         vidObj = cv2.VideoCapture(Path) # Path to video file
         count = 0   # Used as counter variable
         time = 0    # in seconds
@@ -194,13 +220,13 @@ class Model(QObject):
             if(success):
                 count += 1
                 #self._controller.set_progresbar(count/55)#for progress bar
-                time = count*exp_t/1000
+                time = count*int(exp_time)/1000
                 if(state == 'find_ref_point'):
                     ref_img += image[:,:,0]
                     if(time>5):
                         state = 'bgnd_calc'
                         #px,py = find_plan_point(ref_img,count) #normalize edilmiş bgnd
-                        drawing_img, intersect1, intersect2 = self.find_and_draw_ref_points(ref_img,count)
+                        drawing_img, intersect1, intersect2 = self.find_and_draw_ref_points(ref_img,count, ref_point_thresh)
                         #print("Ref points are calculated as: x=%d, y=%d",px,py)
                 elif(state == 'bgnd_calc'):
                     background += image[:,:,0]
@@ -215,7 +241,7 @@ class Model(QObject):
                     av_hist2.append(average2)
                     m_av = utils.moving_avarage(av_hist, 100) #moving avarage
                     m_av_hist.append(m_av)
-                    if(average > m_av+beam_tresh): #bu framede beam onsa
+                    if(average > m_av+int(beam_thresh)): #bu framede beam onsa
                         beam_sum += beam_frame #frameleri topla
                         av_hist3.append(average)
                     else:
