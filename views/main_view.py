@@ -51,6 +51,7 @@ class MainView(QMainWindow):
         self._ui.combo_box_3.setCurrentIndex(1)
     
         # determine if application is a script file or frozen exe
+        image_name = 'Spinner.gif'
         if getattr(sys, 'frozen', False):
             application_path = os.path.dirname(sys.executable)
         elif __file__:
