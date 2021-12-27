@@ -58,7 +58,6 @@ class MainView(QMainWindow):
             application_path = os.path.dirname(__file__)
 
         image_path = os.path.join(application_path, image_name)
-        print(image_path)
 
         self.movie1 = QMovie(image_path)
         self.movie2 = QMovie(image_path)
@@ -113,10 +112,24 @@ class MainView(QMainWindow):
 
         return path_name
 
+    def run_video_without_select(self, Path):
+        print(Path)
+        self.clear_all_results()
+        path_name = self._controller.get_path()
+        print(path_name)
+        self._controller.play_video_controller(self._ui.combo_box_3.currentText(),
+                                                self._ui.combo_box_1.currentText(),
+                                                self._ui.combo_box_2.currentText())
+
     def play_video(self):
         """
         When the run button is pressed, it first shows the things that need to be changed on the screen
         """
+        #try:
+            #self._controller.run_second_time()
+            #print(Path)
+            #self.run_video_without_select(Path)
+        #except:
         self._ui.stop_video.setEnabled(True)
         self._ui.run_video.setEnabled(False)
         self._ui.select_video.setEnabled(False)
@@ -125,6 +138,8 @@ class MainView(QMainWindow):
         self._ui.gif_1.setMovie(self.movie1)
     
         self.start_gif1_animation()
+
+        #self.clear_all_results()# farklı bir fonksiyon yaz ya da ihtiyaca bak
 
     def show_video_images(self):
         """
@@ -140,8 +155,12 @@ class MainView(QMainWindow):
         self._ui.g_image_2.setPixmap(QtGui.QPixmap((self._controller.get_beam_sum_img())))
 
         self._ui.select_video.setEnabled(True)
-        self._ui.run_video.setEnabled(False)
-        self._ui.stop_video.setEnabled(False)   
+        self._ui.run_video.setEnabled(True)
+        self._ui.stop_video.setEnabled(False) 
+
+        if self._ui.tabwidget.currentIndex() == 0:
+            print(self._ui.tabwidget.currentIndex())
+            self._controller.run_second_time()
 
     def set_progresbar(self, count):
         """
@@ -174,6 +193,7 @@ class MainView(QMainWindow):
         """
         Displaying images and values according to the selected threshold value
         """
+        self._ui.run_video.setEnabled(False)
         self._ui.clear.setEnabled(True)
         
         self._ui.g_image_3.setPixmap(QPixmap.fromImage(self._controller.get_binary_img()))
@@ -212,6 +232,10 @@ class MainView(QMainWindow):
         Clearing the values on the screen when the clear button is pressed 
         """
         #images
+        self._ui.g_image_1.clear()
+        self._ui.g_image_2.clear()
+
+        #threshold images
         self._ui.g_image_3.clear()
         self._ui.g_image_4.clear()
 
@@ -237,6 +261,15 @@ class MainView(QMainWindow):
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Error")
         msg.setText("Points not detected, new video should be taken!")
+
+        x = msg.exec_()
+        self.close_app()
+
+    def warning_division_zero(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle("Error")
+        msg.setText("No white space found in the video!")
 
         x = msg.exec_()
         self.close_app()
