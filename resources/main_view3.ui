@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>img/icon.png</normaloff>img/icon.png</iconset>
+    <normaloff>../../../../.designer/backup/img/icon.png</normaloff>../../../../.designer/backup/img/icon.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -394,7 +394,7 @@
          </property>
          <property name="icon">
           <iconset theme="media-playback-start">
-           <normaloff>.</normaloff>.</iconset>
+           <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
          </property>
         </widget>
        </item>
@@ -408,7 +408,7 @@
          </property>
          <property name="icon">
           <iconset theme="media-playback-stop">
-           <normaloff>.</normaloff>.</iconset>
+           <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
          </property>
         </widget>
        </item>
