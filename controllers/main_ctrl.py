@@ -37,7 +37,8 @@ class MainController(QObject):
     def play_video_controller(self, exp_time, beam_thresh, ref_point_thresh):
         """
         After pressing the run button, it creates a thread to run the sum_video in the model, then goes to the view and shows the results.
-        """        
+        """
+        #try:
         video_thread = threading.Thread(target = self._model.frame_sum_thread, args=(exp_time, beam_thresh, ref_point_thresh,))#thread for frame_sum
         video_thread.start()
         self._view.play_video()
@@ -45,6 +46,8 @@ class MainController(QObject):
             #self._model.reset_video_variables()
         if self._model.running == False:
             self.warning_video_taken()
+        #except:
+        #self._view.warning_video()
 
     def show_beam_sum_image(self):
         """
@@ -52,7 +55,7 @@ class MainController(QObject):
         """
         if self._model.beam_sum_img != None:
             self._view.show_video_images()
-
+            
     def stop_video_controller(self):
         """
         It makes the video stop when the stop button is pressed.
@@ -60,7 +63,7 @@ class MainController(QObject):
         self._model.stop_flag()
         if self._model.running == False:
             self._view.stop_video()
-            self._model.reset_video_variables()
+            self._view.clear_all_results()
 
     def thresh_image_controller(self, seg_tresh):
         """
@@ -96,6 +99,12 @@ class MainController(QObject):
         """
         self._view.warning_video_taken()
         #self._view.close_app()
+
+    """def run_second_time(self):
+        Path = self._model.Path
+        print(Path)
+        self._view.play_video()
+        return Path"""
 
     #GET FUNCTIONS
     def get_x_mm(self):
@@ -134,5 +143,3 @@ class MainController(QObject):
     #SET FUNCTIONS
     def set_progresbar(self, count):
         self._view.set_progresbar(count)
-
-
