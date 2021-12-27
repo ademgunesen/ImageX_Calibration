@@ -21,8 +21,6 @@ class Model(QObject):
 
         #SET VARIABLES
         self.Path = ' '
-        self.path = ' '
-        self.file_name = ' '
         self.exp_time = 0
         self.beam_thresh = 0
 
