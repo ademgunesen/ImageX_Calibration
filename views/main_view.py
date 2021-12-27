@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5 import QtGui
 from PyQt5.QtGui import QPixmap, QMovie
 #importing necessary widgets
@@ -49,9 +50,17 @@ class MainView(QMainWindow):
         self._ui.combo_box_2.setCurrentIndex(5)
         self._ui.combo_box_3.setCurrentIndex(1)
     
-        #define gift path
-        self.movie1 = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
-        self.movie2 = QMovie("C:/Users/viven/Desktop/GUIProjects/ImageX_Project/resources/img/Spinner.gif")
+        # determine if application is a script file or frozen exe
+        if getattr(sys, 'frozen', False):
+            application_path = os.path.dirname(sys.executable)
+        elif __file__:
+            application_path = os.path.dirname(__file__)
+
+        image_path = os.path.join(application_path, image_name)
+        print(image_path)
+
+        self.movie1 = QMovie(image_path)
+        self.movie2 = QMovie(image_path)
 
     def start_gif1_animation(self):   
         """
