@@ -1,3 +1,4 @@
+from sys import flags
 import model.utils as utils
 
 #frame_sum
@@ -21,6 +22,7 @@ class Model(QObject):
 
         #SET VARIABLES
         self.Path = ' '
+        self.path = ' '
         self.exp_time = 0
         self.beam_thresh = 0
 
@@ -44,6 +46,7 @@ class Model(QObject):
         self.success = ' '
 
         self.running = True
+        self.text = False
 
     def frame_sum_thread(self, exp_time, beam_thresh, ref_point_thresh):
         """
@@ -133,6 +136,7 @@ class Model(QObject):
         return px,py
 
     def find_ref_points(self, bin_img):
+        ref_points = []
         w = 100
         v = w//2
         width = bin_img.shape[1]
@@ -210,11 +214,15 @@ class Model(QObject):
         ref_img = np.zeros([image.shape[0],image.shape[1]],dtype=np.float32)
         background = np.zeros([image.shape[0],image.shape[1]],dtype=np.float32)
         beam_sum = np.zeros([image.shape[0],image.shape[1]],dtype=np.float32)
+        intersect1 = 0,0
+        intersect2 = 0,0 
+        drawing_img = None
         av_hist = []
         av_hist2 = []
         av_hist3 = []
         m_av_hist = []
         while (success):
+            print(success)
             if(success):
                 count += 1
                 #self._controller.set_progresbar(count/55)#for progress bar
@@ -251,7 +259,7 @@ class Model(QObject):
 
         self.beam_sum_img =utils.gray2rgb(utils.np2gray(beam_sum))#convert a nparray to 0-255 normalize
         self.beam_sum_img = utils.show_images_in_designer(self.beam_sum_img)
-        self.stop_flag()
+        #self.stop_flag()
 
         if self.success == False:
             self._controller.show_beam_sum_image()#QObject::killTimer: Timers cannot be stopped from another thread!!!
@@ -282,9 +290,13 @@ class Model(QObject):
         return gauss_img
 
     def center_of_mass(self, binary_img):
-        M = cv2.moments(binary_img.astype(np.uint8))
-        cX = int(M["m10"] / M["m00"])
-        cY = int(M["m01"] / M["m00"])
+        try:
+            M = cv2.moments(binary_img.astype(np.uint8))
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+        except:
+            self._controller.warning_video_taken()
+
         return (cX,cY)
 
     def pixels_to_mm(self, pix_dist):
@@ -296,6 +308,9 @@ class Model(QObject):
     #SET FUNCTIONS
     def set_path(self, path_name):
         self.Path = path_name
+
+    def set_text (self, flag):
+        self.text = flag
 
     def set_count(self, cnt):
         self.count = cnt
