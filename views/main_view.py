@@ -45,6 +45,7 @@ class MainView(QMainWindow):
         #for the application to start from the video page
         self._ui.tabwidget.setCurrentIndex(0)
         self._ui.progressBar.hide()
+
         #set default variables
         self._ui.combo_box_1.setCurrentIndex(4)
         self._ui.combo_box_2.setCurrentIndex(5)
@@ -112,24 +113,11 @@ class MainView(QMainWindow):
 
         return path_name
 
-    def run_video_without_select(self, Path):
-        print(Path)
-        self.clear_all_results()
-        path_name = self._controller.get_path()
-        print(path_name)
-        self._controller.play_video_controller(self._ui.combo_box_3.currentText(),
-                                                self._ui.combo_box_1.currentText(),
-                                                self._ui.combo_box_2.currentText())
-
     def play_video(self):
         """
         When the run button is pressed, it first shows the things that need to be changed on the screen
         """
-        #try:
-            #self._controller.run_second_time()
-            #print(Path)
-            #self.run_video_without_select(Path)
-        #except:
+        self.clear_all_results()
         self._ui.stop_video.setEnabled(True)
         self._ui.run_video.setEnabled(False)
         self._ui.select_video.setEnabled(False)
@@ -157,10 +145,6 @@ class MainView(QMainWindow):
         self._ui.select_video.setEnabled(True)
         self._ui.run_video.setEnabled(True)
         self._ui.stop_video.setEnabled(False) 
-
-        if self._ui.tabwidget.currentIndex() == 0:
-            print(self._ui.tabwidget.currentIndex())
-            self._controller.run_second_time()
 
     def set_progresbar(self, count):
         """
@@ -193,7 +177,7 @@ class MainView(QMainWindow):
         """
         Displaying images and values according to the selected threshold value
         """
-        self._ui.run_video.setEnabled(False)
+        self._ui.run_video.setEnabled(True)
         self._ui.clear.setEnabled(True)
         
         self._ui.g_image_3.setPixmap(QPixmap.fromImage(self._controller.get_binary_img()))
