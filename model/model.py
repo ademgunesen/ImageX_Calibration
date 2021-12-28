@@ -222,7 +222,7 @@ class Model(QObject):
         av_hist3 = []
         m_av_hist = []
         while (success):
-            print(success)
+            #print(success)
             if(success):
                 count += 1
                 #self._controller.set_progresbar(count/55)#for progress bar
