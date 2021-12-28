@@ -127,6 +127,10 @@ class MainView(QMainWindow):
     
         self.start_gif1_animation()
 
+        self._ui.combo_box_1.setEnabled(False)
+        self._ui.combo_box_2.setEnabled(False)
+        self._ui.combo_box_3.setEnabled(False)
+
         #self.clear_all_results()# farklı bir fonksiyon yaz ya da ihtiyaca bak
 
     def show_video_images(self):
@@ -145,6 +149,10 @@ class MainView(QMainWindow):
         self._ui.select_video.setEnabled(True)
         self._ui.run_video.setEnabled(True)
         self._ui.stop_video.setEnabled(False) 
+
+        self._ui.combo_box_1.setEnabled(True)
+        self._ui.combo_box_2.setEnabled(True)
+        self._ui.combo_box_3.setEnabled(True)
 
     def set_progresbar(self, count):
         """
