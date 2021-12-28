@@ -31,7 +31,7 @@ class MainController(QObject):
         path_name = self._view.select_video()
         self._model.set_path(path_name)
 
-        if path_name == self._model.Path:
+        if path_name != '':
             self._model.first_video_image(path_name)
         else:
             self._view.warning_video()
@@ -39,7 +39,10 @@ class MainController(QObject):
     def run_again(self):
         self._model.running = True
         path_name = self._model.Path
-        self._model.first_video_image(path_name)
+        if path_name != '':
+            self._model.first_video_image(path_name)
+        else:
+            self._view.warning_video()
 
     def play_video_controller(self, exp_time, beam_thresh, ref_point_thresh):
         """
