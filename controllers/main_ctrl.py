@@ -1,4 +1,6 @@
 #from _typeshed import Self
+from math import e
+from sys import path
 import threading
 import time
 import os
@@ -34,19 +36,28 @@ class MainController(QObject):
         else:
             self._view.warning_video()
 
+    def run_again(self):
+        self._model.running = True
+        path_name = self._model.Path
+        self._model.first_video_image(path_name)
+
     def play_video_controller(self, exp_time, beam_thresh, ref_point_thresh):
         """
         After pressing the run button, it creates a thread to run the sum_video in the model, then goes to the view and shows the results.
         """
-        #try:
-        video_thread = threading.Thread(target = self._model.frame_sum_thread, args=(exp_time, beam_thresh, ref_point_thresh,))#thread for frame_sum
-        video_thread.start()
-        self._view.play_video()
+        if self._model.text == False: 
+            video_thread = threading.Thread(target = self._model.frame_sum_thread, args=(exp_time, beam_thresh, ref_point_thresh,))#thread for frame_sum
+            video_thread.start()
+            self._view.play_video()
+        else:
+            self.run_again()
+            video_thread = threading.Thread(target = self._model.frame_sum_thread, args=(exp_time, beam_thresh, ref_point_thresh,))#thread for frame_sum
+            video_thread.start()
+            self._view.play_video()
+
         #if self._model.running == False:
-            #self._model.reset_video_variables()
-        if self._model.running == False:
-            self.warning_video_taken()
-        #except:
+            #self._view.clear_all_results()
+        
         #self._view.warning_video()
 
     def show_beam_sum_image(self):
@@ -55,6 +66,7 @@ class MainController(QObject):
         """
         if self._model.beam_sum_img != None:
             self._view.show_video_images()
+            self._model.text = True
             
     def stop_video_controller(self):
         """
@@ -100,12 +112,6 @@ class MainController(QObject):
         self._view.warning_video_taken()
         #self._view.close_app()
 
-    """def run_second_time(self):
-        Path = self._model.Path
-        print(Path)
-        self._view.play_video()
-        return Path"""
-
     #GET FUNCTIONS
     def get_x_mm(self):
         return self._model.x_mm
@@ -124,9 +130,12 @@ class MainController(QObject):
 
     def get_running(self):
         return self._model.running
+    
+    def get_text_flag(self):
+        return self._model.text
 
-    def get_images_path(self):
-        return self._model.path
+    def get_path(self):
+        return self._model.Path
 
     def get_first_frame(self):
         return self._model.image_qt
@@ -143,3 +152,4 @@ class MainController(QObject):
     #SET FUNCTIONS
     def set_progresbar(self, count):
         self._view.set_progresbar(count)
+    
