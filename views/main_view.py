@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (QMainWindow, QMessageBox, QFileDialog, QStyle)
 #load view
 from views.main_view_ui3 import Ui_MainWindow
 
+
 #All widgets that appear in Qt designer are in this section.
 class MainView(QMainWindow):
     def __init__(self, controller):
@@ -33,7 +34,7 @@ class MainView(QMainWindow):
      
         #menu bar triggered
         self._ui.Exit.triggered.connect(self.close_app)
-        self._ui.Save_TXT_File.triggered.connect(self.save_file)
+        self._ui.Save_TXT_File.triggered.connect(self._controller.save_to_file)
 
         #threshold buttons
         self._ui.action60.triggered.connect(lambda: self._controller.thresh_image_controller(60))
@@ -45,6 +46,7 @@ class MainView(QMainWindow):
         #for the application to start from the video page
         self._ui.tabwidget.setCurrentIndex(0)
         self._ui.progressBar.hide()
+        self._ui.clear.hide()
 
         #set default variables
         self._ui.combo_box_1.setCurrentIndex(4)
@@ -281,11 +283,6 @@ class MainView(QMainWindow):
         msg.setText("Wrong path!")
 
         x = msg.exec_()
-
-    def save_file(self):
-        with open('test.txt', 'w') as f:
-            my_text = self._ui.ei_label_1.toPlainText()#label değil text olmalı. Neyin save edileceğini öğren
-            f.write(my_text)
 
     def close_app(self):
         reply = QMessageBox.question(self, "Window Close", "Are you sure you want to close the window?",
