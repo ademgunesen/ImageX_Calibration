@@ -12,6 +12,8 @@ from views.main_view import MainView
 
 from PyQt5.QtCore import QObject
 
+import model.utils as utils
+
 class MainController(QObject):
     def __init__(self):
         super().__init__()
@@ -114,6 +116,23 @@ class MainController(QObject):
         """
         self._view.warning_video_taken()
         #self._view.close_app()
+
+    def save_to_file(self):
+        date = utils.make_date()
+        file = utils.make_file(date)
+        
+        utils.save_to_file(file, "\nImage 1 Threshold Area Information\nAnterior: " + str(self._model.y_mm))
+        utils.save_to_file(file, "\nLeft: " + str(self._model.x_mm))
+
+        utils.save_to_file(file, "\n\nImage 2 Threshold Area Information\nAnterior: " + str(self._model.y_mm))
+        utils.save_to_file(file, "\nSuperior: " + str(self._model.x_mm))
+
+        utils.save_to_file(file, "\n\nError Informationn\nLeft Error mm: " + str(self._model.x_mm))
+        utils.save_to_file(file, "\nAnterior Error mm (A/L) Image: " + str(self._model.y_mm))
+        utils.save_to_file(file, "\nSuperior Error mm:: " + str(self._model.x_mm))
+        utils.save_to_file(file, "\nAnterior Error mm (A/S) Image: " + str(self._model.y_mm))
+        utils.save_to_file(file, "\nAverage Anterior Error mm: " + str(self._model.avr_ant_err))
+        utils.save_to_file(file, "\nTOTAL TARGETING ERROR mm: " + str(self._model.target_err))
 
     #GET FUNCTIONS
     def get_x_mm(self):
