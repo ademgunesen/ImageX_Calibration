@@ -1,8 +1,10 @@
 import cv2
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import math
 import pickle
+import datetime
 from PyQt5 import QtGui
 from PyQt5.QtGui import QPixmap
 
@@ -19,6 +21,21 @@ def read_var(file_name):
 	var = pickle.load(infile)
 	infile.close()
 	return var
+
+def make_date():
+    current_date = datetime.datetime.now()
+    date = current_date.strftime("%Y_%B_%d-%H_%M_%S")
+    #path = make_subfolder(dirname,parent_path)
+    return date
+
+def make_file(date):
+	with open(f'out/test_{date}.txt', 'a') as f:
+		file = (f'out/test_{date}.txt')
+	return file
+
+def save_to_file(file, entry = ""):
+	with open(file, 'a') as f:
+		f.write(entry)		
 	
 def show_images(images: list, titles: list="Untitled	", colorScale='gray', figname="unnamed", rows = 0, columns = 0) -> None:
 	n: int = len(images)
