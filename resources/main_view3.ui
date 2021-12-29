@@ -102,7 +102,7 @@
        <property name="geometry">
         <rect>
          <x>760</x>
-         <y>40</y>
+         <y>300</y>
          <width>81</width>
          <height>81</height>
         </rect>
@@ -120,8 +120,8 @@
       <widget class="QLabel" name="progressing">
        <property name="geometry">
         <rect>
-         <x>870</x>
-         <y>70</y>
+         <x>750</x>
+         <y>400</y>
          <width>101</width>
          <height>31</height>
         </rect>
@@ -145,7 +145,7 @@
        <property name="geometry">
         <rect>
          <x>760</x>
-         <y>180</y>
+         <y>90</y>
          <width>91</width>
          <height>31</height>
         </rect>
@@ -209,8 +209,8 @@
       <widget class="QLabel" name="label_1">
        <property name="geometry">
         <rect>
-         <x>760</x>
-         <y>140</y>
+         <x>750</x>
+         <y>50</y>
          <width>271</width>
          <height>31</height>
         </rect>
@@ -221,7 +221,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Select Beam Threshod</string>
+        <string>Beam Threshold</string>
        </property>
       </widget>
       <widget class="QComboBox" name="combo_box_2">
@@ -231,7 +231,7 @@
        <property name="geometry">
         <rect>
          <x>760</x>
-         <y>280</y>
+         <y>170</y>
          <width>91</width>
          <height>31</height>
         </rect>
@@ -300,9 +300,9 @@
       <widget class="QLabel" name="label_2">
        <property name="geometry">
         <rect>
-         <x>760</x>
-         <y>230</y>
-         <width>281</width>
+         <x>750</x>
+         <y>130</y>
+         <width>291</width>
          <height>31</height>
         </rect>
        </property>
@@ -312,7 +312,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Select Referans Point Threshod</string>
+        <string>Select Referans Point Threshold</string>
        </property>
       </widget>
       <widget class="QComboBox" name="combo_box_3">
@@ -322,7 +322,7 @@
        <property name="geometry">
         <rect>
          <x>760</x>
-         <y>380</y>
+         <y>250</y>
          <width>91</width>
          <height>31</height>
         </rect>
@@ -351,8 +351,8 @@
       <widget class="QLabel" name="label_3">
        <property name="geometry">
         <rect>
-         <x>760</x>
-         <y>330</y>
+         <x>750</x>
+         <y>210</y>
          <width>281</width>
          <height>31</height>
         </rect>
@@ -395,6 +395,9 @@
          <property name="icon">
           <iconset theme="media-playback-start">
            <normaloff>.</normaloff>.</iconset>
+         </property>
+         <property name="shortcut">
+          <string>Return</string>
          </property>
         </widget>
        </item>
@@ -1161,24 +1164,8 @@
     <addaction name="actionOnce"/>
     <addaction name="menuThreshold"/>
    </widget>
-   <widget class="QMenu" name="menuImage_1">
-    <property name="title">
-     <string>Image 1</string>
-    </property>
-    <addaction name="action_superior_anterior_image1"/>
-    <addaction name="action_left_anterior_image1"/>
-   </widget>
-   <widget class="QMenu" name="menuImage_2">
-    <property name="title">
-     <string>Image 2</string>
-    </property>
-    <addaction name="action_superior_anterior_image_2"/>
-    <addaction name="actionLeft_Anterior_Image2"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="execute"/>
-   <addaction name="menuImage_1"/>
-   <addaction name="menuImage_2"/>
   </widget>
   <action name="open_video_file">
    <property name="text">
