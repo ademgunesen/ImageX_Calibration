@@ -27,7 +27,7 @@
       <x>0</x>
       <y>0</y>
       <width>1161</width>
-      <height>901</height>
+      <height>911</height>
      </rect>
     </property>
     <property name="font">
@@ -37,6 +37,9 @@
     </property>
     <property name="focusPolicy">
      <enum>Qt::TabFocus</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -98,46 +101,6 @@
         <set>Qt::AlignJustify|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="gif_1">
-       <property name="geometry">
-        <rect>
-         <x>760</x>
-         <y>300</y>
-         <width>81</width>
-         <height>81</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="progressing">
-       <property name="geometry">
-        <rect>
-         <x>750</x>
-         <y>400</y>
-         <width>101</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="autoFillBackground">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
       <widget class="QComboBox" name="combo_box_1">
        <property name="enabled">
         <bool>true</bool>
@@ -145,7 +108,7 @@
        <property name="geometry">
         <rect>
          <x>760</x>
-         <y>90</y>
+         <y>170</y>
          <width>91</width>
          <height>31</height>
         </rect>
@@ -210,7 +173,7 @@
        <property name="geometry">
         <rect>
          <x>750</x>
-         <y>50</y>
+         <y>130</y>
          <width>271</width>
          <height>31</height>
         </rect>
@@ -231,7 +194,7 @@
        <property name="geometry">
         <rect>
          <x>760</x>
-         <y>170</y>
+         <y>80</y>
          <width>91</width>
          <height>31</height>
         </rect>
@@ -301,7 +264,7 @@
        <property name="geometry">
         <rect>
          <x>750</x>
-         <y>130</y>
+         <y>40</y>
          <width>291</width>
          <height>31</height>
         </rect>
@@ -312,7 +275,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Select Referans Point Threshold</string>
+        <string>Referans Point Threshold</string>
        </property>
       </widget>
       <widget class="QComboBox" name="combo_box_3">
@@ -363,7 +326,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Select Exposure Time</string>
+        <string>Exposure Time (ms)</string>
        </property>
       </widget>
      </widget>
@@ -417,20 +380,17 @@
        </item>
       </layout>
      </widget>
-     <widget class="QProgressBar" name="progressBar">
+     <widget class="QProgressBar" name="progressbar">
       <property name="geometry">
        <rect>
         <x>370</x>
         <y>810</y>
         <width>321</width>
-        <height>31</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="value">
        <number>0</number>
-      </property>
-      <property name="textVisible">
-       <bool>true</bool>
       </property>
      </widget>
     </widget>
@@ -1087,8 +1047,8 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>900</x>
-        <y>640</y>
+        <x>1040</x>
+        <y>620</y>
         <width>101</width>
         <height>31</height>
        </rect>
@@ -1097,11 +1057,11 @@
        <string>Clear</string>
       </property>
      </widget>
-     <widget class="QLabel" name="gif_2">
+     <widget class="QLabel" name="gif">
       <property name="geometry">
        <rect>
-        <x>320</x>
-        <y>760</y>
+        <x>900</x>
+        <y>630</y>
         <width>91</width>
         <height>91</height>
        </rect>
@@ -1130,6 +1090,9 @@
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="font">
      <font>
       <family>MS Shell Dlg 2</family>
@@ -1161,11 +1124,17 @@
      <addaction name="action75"/>
      <addaction name="action80"/>
     </widget>
-    <addaction name="actionOnce"/>
     <addaction name="menuThreshold"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="execute"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="open_video_file">
    <property name="text">
@@ -1274,6 +1243,9 @@
    </property>
   </action>
   <action name="actionPrint">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Print</string>
    </property>
@@ -1281,6 +1253,11 @@
   <action name="actionasd">
    <property name="text">
     <string>asd</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>
