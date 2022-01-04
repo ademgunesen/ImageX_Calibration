@@ -1,40 +1,105 @@
-from sys import flags
+#stop_flag = 0 
+#center_of_mass_flag = 1
 import model.utils as utils
-
 #frame_sum
 import math 
-import os
 import cv2
 import numpy as np
 from skimage.morphology import disk, closing
 
 from PIL import Image, ImageQt
 
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QObject, QThreadPool, QRunnable, pyqtSignal, pyqtSlot
 my_formatter = "{0:.2f}"
-class Model(QObject):
+
+import traceback, sys
+
+class WorkerSignals(QObject):
+    
+    finished = pyqtSignal()
+    error = pyqtSignal(tuple)
+    result = pyqtSignal(object)
+    progress = pyqtSignal(int)
+    state = pyqtSignal(object)
+    stop = pyqtSignal(int)
+
+class Worker(QRunnable):
+
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = WorkerSignals()
+
+        self.kwargs['stop_callback'] = self.signals.stop
+
+    @pyqtSlot()
+    def run(self):
+        '''
+        Initialise the runner function with passed args, kwargs.
+        '''
+        # Retrieve args/kwargs here; and fire processing using them
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except:
+            traceback.print_exc()
+            exctype, value = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(result)  # Return the result of the processing
+        finally:
+            self.signals.finished.emit()  # Done
+
+class Worker2(QRunnable):
+
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker2, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = WorkerSignals()
+
+        # Add the callback to our kwargs
+        self.kwargs['progress_callback'] = self.signals.progress
+        self.kwargs['state_callback'] = self.signals.state
+        self.kwargs['stop_callback'] = self.signals.stop
+
+    @pyqtSlot()
+    def run(self):
+        '''
+        Initialise the runner function with passed args, kwargs.
+        '''
+        # Retrieve args/kwargs here; and fire processing using them
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except:
+            traceback.print_exc()
+            exctype, value = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(result)  # Return the result of the processing
+        finally:
+            self.signals.finished.emit()  # Done
+
+class Model():
+
     def __init__(self, controller):
-        super().__init__()
-        """
-        definition of all variables used
-        """
+
         self._controller = controller
 
         #SET VARIABLES
         self.Path = ' '
-        self.path = ' '
         self.exp_time = 0
         self.beam_thresh = 0
+        self.ref_point_thresh = 0
 
         self.beam_sum = 0
-        self.beam_sum_img = 0
-        self.binary_img = 0
-        self.ind = 0
-
         self.binary_img_qt = 0
-        self.image_qt = 0
-
         self.planned_center = 0
+
         self.x_mm = 0
         self.y_mm = 0
         self.avr_ant_err = 0
@@ -46,96 +111,83 @@ class Model(QObject):
         self.success = ' '
 
         self.running = True
-        self.text = False
 
-    def frame_sum_thread(self, exp_time, beam_thresh, ref_point_thresh):
+        self.threadpool = QThreadPool()
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+    
+    def first_video_image(self, stop_callback):
         """
-        Since sum_video takes a long time, it is called from the thread and beam_sum is obtained
+        finds the first frame of the selected video
         """
-        self.beam_sum, intersect1, intersect2, drawing_img = self.sum_video(self.Path, exp_time, beam_thresh, ref_point_thresh)
-        self.planned_center = tuple(0.5*np.array(intersect1) + 0.5*np.array(intersect2))
-        self.stop_flag()
+        vidObj = cv2.VideoCapture(self.Path)
+        success, image = vidObj.read()
+        self.image_qt = utils.show_images_in_designer(image)
+        stop_callback.emit(0)
 
-    def threshold_thread(self, seg_tresh):
+        return self.image_qt
+
+    def threshold_thread(self, stop_callback):
         """
         Since segmentation takes a long time and there is a crashing problem in the application, it is called from the thread and ind, binay_img are obtained. 
-        """
-        self.ind, self.binary_img, enhanced_img = self.segmentation_using_com(self.beam_sum, seg_tresh) 
-        self.calculate_xy_img()
-        
-    def calculate_xy_img(self):
-        """
         Obtaining ind, x_mm, y_mm and threshold image
         """
-        binary_img_array = Image.fromarray(self.binary_img)
-        self.binary_img_qt = ImageQt.ImageQt(binary_img_array)
+        #progress_callback.emit(count)
 
-        x_mm = self.pixels_to_mm(self.planned_center[0]-self.ind[0])
-        y_mm = self.pixels_to_mm(self.planned_center[1]-self.ind[1])
+        ind, binary_img, enhanced_img = self.segmentation_using_com(self.beam_sum, self.seg_tresh, stop_callback) 
+        binary_img_array = Image.fromarray(binary_img)
+        binary_img_qt = ImageQt.ImageQt(binary_img_array)
 
+        x_mm = self.pixels_to_mm(self.planned_center[0]-ind[0])
+        y_mm = self.pixels_to_mm(self.planned_center[1]-ind[1])
+    
         #self.average_anterior_err(y_mm, y_mm)
-        self.targetting_err(x_mm, x_mm, y_mm) 
+        self.target_err, self.avr_ant_err = self.targetting_err(x_mm, x_mm, y_mm) 
 
         self.x_mm = my_formatter.format(x_mm)
         self.y_mm = my_formatter.format(y_mm)
-
-        self._controller.thresh_image_results()  
-
+    
+        return binary_img_qt, self.x_mm, self.y_mm, self.avr_ant_err, self.target_err
+        
     def average_anterior_err(self, y1, y2):
         """
         calculate average anterior error
         """
         avr_ant_err =  (y1 + y2)/2
-        self.avr_ant_err = my_formatter.format(avr_ant_err)
-        return avr_ant_err
+        avr_ant_err_format = my_formatter.format(avr_ant_err)
+
+        return avr_ant_err, avr_ant_err_format
        
     def targetting_err(self, x, y, z):
         """
         total targetting error (x2+y2+z2)kök
         """
-        avr_ant_err = self.average_anterior_err(z, z)
+        avr_ant_err, avr_ant_err_format = self.average_anterior_err(z, z)
         z = avr_ant_err
-        target_err = (math.sqrt(pow(x, 2)+pow(y, 2)+pow(z, 2)))
-        self.target_err = my_formatter.format(target_err)
-
+       
+        target_err = (math.sqrt((x*x)+(y*y)+(z*z)))
+        target_err = my_formatter.format(target_err)
+        
+        return target_err, avr_ant_err_format
+    
     def stop_flag(self):
         """
         Changing the flag to stop when the stop button is pressed
         """
         self.running = False
 
-    def reset_video_variables(self):
-        """
-        stop butonun  basılınca değerlerin sıfırlanaması
-        """
-        self.beam_sum = 0
-        self.ind = 0
-
-        self.x_mm = 0
-        self.y_mm = 0
-
-    def first_video_image(self, Path):
-        """
-        finds the first frame of the selected video
-        """
-        vidObj = cv2.VideoCapture(Path)
-        success, image = vidObj.read()
-        self.image_qt = utils.show_images_in_designer(image)
-        self._controller.show_first_image()
-
     #Frame Sum Script
     def calculate_background(self, background, count):
         background_norm = (1/count)*background
         return background_norm
 
-    def find_plan_point(self, ref_img,count):
+    def find_plan_point(self, ref_img,count, stop_callback):
         ref_img_norm = (1/count)*ref_img
         ref_img_enhanced = self.enhance_refs(ref_img_norm)
         ref_img_binary = ref_img_enhanced > 150
-        px,py = self.center_of_mass(ref_img_binary)
+        px,py = self.center_of_mass(ref_img_binary, stop_callback)
         return px,py
 
-    def find_ref_points(self, bin_img):
+    def find_ref_points(self, bin_img, stop_callback):
         ref_points = []
         w = 100
         v = w//2
@@ -153,15 +205,15 @@ class Model(QObject):
         im21 = bin_img[-w:,midpx-v:midpx+v]
         im22 = bin_img[-w:,-w:]
         
-        ref_px00, ref_py00 = self.center_of_mass(im00)
-        ref_px01, ref_py01 = self.center_of_mass(im01)
-        ref_px02, ref_py02 = self.center_of_mass(im02)
-        ref_px10, ref_py10 = self.center_of_mass(im10)
+        ref_px00, ref_py00 = self.center_of_mass(im00, stop_callback)
+        ref_px01, ref_py01 = self.center_of_mass(im01, stop_callback)
+        ref_px02, ref_py02 = self.center_of_mass(im02, stop_callback)
+        ref_px10, ref_py10 = self.center_of_mass(im10, stop_callback)
         #ref_px11, ref_py11 = center_of_mass(im11)
-        ref_px12, ref_py12 = self.center_of_mass(im12)
-        ref_px20, ref_py20 = self.center_of_mass(im20)
-        ref_px21, ref_py21 = self.center_of_mass(im21)
-        ref_px22, ref_py22 = self.center_of_mass(im22)
+        ref_px12, ref_py12 = self.center_of_mass(im12, stop_callback)
+        ref_px20, ref_py20 = self.center_of_mass(im20, stop_callback)
+        ref_px21, ref_py21 = self.center_of_mass(im21, stop_callback)
+        ref_px22, ref_py22 = self.center_of_mass(im22, stop_callback)
 
         ref_p00 = (ref_px00, ref_py00)
         ref_p01 = (midpx-v + ref_px01, ref_py01)
@@ -181,7 +233,7 @@ class Model(QObject):
             drawing_img = utils.draw_ref_point(drawing_img,p)	
         return drawing_img
 
-    def draw_ref_lines(self, drawing_img,ref_points):
+    def draw_ref_lines(self, drawing_img, ref_points):
         utils.draw_ref_line_g(drawing_img,[ref_points[1],ref_points[6]])
         utils.draw_ref_line_g(drawing_img,[ref_points[3],ref_points[4]])
         intersect1 = utils.get_intersect(ref_points[1],ref_points[6],ref_points[3],ref_points[4])
@@ -192,24 +244,29 @@ class Model(QObject):
         utils.draw_ref_point(drawing_img,intersect2)	
         return drawing_img, intersect1, intersect2
 
-    def find_and_draw_ref_points(self, ref_img, count, ref_point_thresh):
+    def find_and_draw_ref_points(self, ref_img, count, ref_point_thresh, stop_callback):
         ref_img_norm = (1/count)*ref_img
         ref_img_enhanced = self.enhance_refs(ref_img_norm)
         ref_img_binary = ref_img_enhanced > int(ref_point_thresh)
-        ref_points = self.find_ref_points(ref_img_binary)
-        drawing_img = self.draw_ref_points(ref_img_binary,ref_points)
+        ref_points = self.find_ref_points(ref_img_binary, stop_callback)
+        drawing_img = self.draw_ref_points(ref_img_binary, ref_points)
         drawing_img, intersect1, intersect2 = self.draw_ref_lines(drawing_img,ref_points)
-        self.drawing_img = utils.show_images_in_designer(drawing_img)
+        drawing_img = utils.show_images_in_designer(drawing_img)
         #cv2.imwrite(os.path.join(self.path, "ref_point_images.jpg"), drawing_img.astype(np.uint8))
-        self._controller.show_second_image()
+
         return drawing_img, intersect1, intersect2
     
-    def sum_video(self, Path , exp_time, beam_thresh, ref_point_thresh):
-        vidObj = cv2.VideoCapture(Path) # Path to video file
-        count = 0   # Used as counter variable
-        time = 0    # in seconds
-        state = 'find_ref_point'
+    def sum_video(self, progress_callback, state_callback, stop_callback):
 
+        print(self.exp_time)
+        print(self.beam_thresh)
+        print(self.ref_point_thresh)
+
+        vidObj = cv2.VideoCapture(self.Path) # Path to video file
+        count = 0	# Used as counter variable
+        time = 0	# in seconds
+        state = 'find_ref_point'
+        
         success, image = vidObj.read()
         ref_img = np.zeros([image.shape[0],image.shape[1]],dtype=np.float32)
         background = np.zeros([image.shape[0],image.shape[1]],dtype=np.float32)
@@ -221,18 +278,21 @@ class Model(QObject):
         av_hist2 = []
         av_hist3 = []
         m_av_hist = []
+        total_frame = vidObj.get(cv2.CAP_PROP_FRAME_COUNT)
         while (success):
-            #print(success)
             if(success):
                 count += 1
-                #self._controller.set_progresbar(count/55)#for progress bar
-                time = count*int(exp_time)/1000
+                progressbar_count = ((count/total_frame)*100)#for progress bar
+                progress_callback.emit(progressbar_count)
+                time = count*int(self.exp_time)/1000
                 if(state == 'find_ref_point'):
                     ref_img += image[:,:,0]
                     if(time>5):
                         state = 'bgnd_calc'
                         #px,py = find_plan_point(ref_img,count) #normalize edilmiş bgnd
-                        drawing_img, intersect1, intersect2 = self.find_and_draw_ref_points(ref_img,count, ref_point_thresh)
+                        self.drawing_img, intersect1, intersect2 = self.find_and_draw_ref_points(ref_img,count,  self.ref_point_thresh, stop_callback)
+                        state_callback.emit(self.drawing_img)
+                        self.planned_center = tuple(0.5*np.array(intersect1) + 0.5*np.array(intersect2))
                         #print("Ref points are calculated as: x=%d, y=%d",px,py)
                 elif(state == 'bgnd_calc'):
                     background += image[:,:,0]
@@ -247,33 +307,31 @@ class Model(QObject):
                     av_hist2.append(average2)
                     m_av = utils.moving_avarage(av_hist, 100) #moving avarage
                     m_av_hist.append(m_av)
-                    if(average > m_av+int(beam_thresh)): #bu framede beam onsa
+                    if(average > m_av+int(self.beam_thresh)): #bu framede beam onsa
                         beam_sum += beam_frame #frameleri topla
                         av_hist3.append(average)
                     else:
                         av_hist3.append(0)	
             success, image = vidObj.read()
-            self.success = success
             if self.running == False:
+                stop_callback.emit(0)#stop_flag = 0 
                 break
 
-        self.beam_sum_img =utils.gray2rgb(utils.np2gray(beam_sum))#convert a nparray to 0-255 normalize
-        self.beam_sum_img = utils.show_images_in_designer(self.beam_sum_img)
-        #self.stop_flag()
+        self.beam_sum = beam_sum
 
-        if self.success == False:
-            self._controller.show_beam_sum_image()#QObject::killTimer: Timers cannot be stopped from another thread!!!
-            
-        return beam_sum, intersect1, intersect2, drawing_img
+        beam_sum_img =utils.gray2rgb(utils.np2gray(beam_sum))
+        beam_sum_img = utils.show_images_in_designer(beam_sum_img)
+
+        return beam_sum_img
     
-    def segmentation_using_com(self, image, seg_thresh): 
+    def segmentation_using_com(self, image, seg_thresh, stop_callback): 
         enhanced_img = self.enhance_sphere(image)
         smallest = enhanced_img.min(axis=0).min(axis=0)
         biggest = enhanced_img.max(axis=0).max(axis=0)
         cut_off = (biggest-smallest)*(seg_thresh/100)+smallest
         
         thresh = enhanced_img>cut_off 
-        ind2 = self.center_of_mass(thresh) 
+        ind2 = self.center_of_mass(thresh, stop_callback) 
         draft2 = utils.draw_circle(image,ind2,120)
         return ind2, thresh, enhanced_img
     
@@ -289,13 +347,13 @@ class Model(QObject):
         gauss_img = cv2.GaussianBlur(closed_img,(3,3),cv2.BORDER_DEFAULT)
         return gauss_img
 
-    def center_of_mass(self, binary_img):
+    def center_of_mass(self, binary_img, stop_callback):
         try:
             M = cv2.moments(binary_img.astype(np.uint8))
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
         except:
-            self._controller.warning_video_taken()
+            stop_callback.emit(1)#center_of_mass_flag = 1 
 
         return (cX,cY)
 
@@ -306,11 +364,17 @@ class Model(QObject):
         return pix_dist*ratio
 
     #SET FUNCTIONS
-    def set_path(self, path_name):
+    def set_path(self, path_name):    
         self.Path = path_name
 
-    def set_text (self, flag):
-        self.text = flag
+    def set_exp_time(self, exp_time):    
+        self.exp_time = exp_time
 
-    def set_count(self, cnt):
-        self.count = cnt
+    def set_beam_thresh(self, beam_thresh):    
+        self.beam_thresh = beam_thresh
+
+    def set_res_point_thresh(self, ref_point_thresh):    
+        self.ref_point_thresh = ref_point_thresh
+
+    def set_seg_tresh(self, seg_tresh):    
+        self.seg_tresh = seg_tresh
