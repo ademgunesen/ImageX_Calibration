@@ -119,6 +119,10 @@ def draw_ref_line_y(drawing_img,lpoints):
 	ret_image = cv2.line(drawing_img,lpoints[0],lpoints[1],(255,255,0),1)
 	return ret_image
 
+def draw_rectangle(drawing_img, points):
+	ret_image = cv2.rectangle(drawing_img,points[0],points[1],(255,255,0),3)
+	return ret_image
+
 def get_intersect(a1, a2, b1, b2):
     """ 
     Returns the point of intersection of the lines passing through a2,a1 and b2,b1.

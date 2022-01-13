@@ -1,11 +1,11 @@
 #stop_flag = 0 
 #center_of_mass_flag = 1
 import model.utils as utils
-#frame_sum
 import math 
 import cv2
 import numpy as np
 from skimage.morphology import disk, closing
+from skimage.filters import median, threshold_otsu
 
 from PIL import Image, ImageQt
 
@@ -97,8 +97,11 @@ class Model():
         self.ref_point_thresh = 0
 
         self.beam_sum = 0
+        self.beam_sum_l = 0
+        self.beam_sum_r = 0
         self.binary_img_qt = 0
-        self.planned_center = 0
+        self.planned_center_l = 0
+        self.planned_center_r = 0
 
         self.x_mm = 0
         self.y_mm = 0
@@ -133,41 +136,45 @@ class Model():
         """
         #progress_callback.emit(count)
 
-        ind, binary_img, enhanced_img = self.segmentation_using_com(self.beam_sum, self.seg_tresh, stop_callback) 
-        binary_img_array = Image.fromarray(binary_img)
-        binary_img_qt = ImageQt.ImageQt(binary_img_array)
+        ind_l, binary_img_l, enhanced_img_l = self.segmentation_using_com(self.beam_sum_l, self.seg_tresh, stop_callback) 
+        binary_img_array_l = Image.fromarray(binary_img_l)
+        binary_img_qt_l = ImageQt.ImageQt(binary_img_array_l)
 
-        x_mm = self.pixels_to_mm(self.planned_center[0]-ind[0])
-        y_mm = self.pixels_to_mm(self.planned_center[1]-ind[1])
-    
-        #self.average_anterior_err(y_mm, y_mm)
-        self.target_err, self.avr_ant_err = self.targetting_err(x_mm, x_mm, y_mm) 
+        self.x_mm_l = self.pixels_to_mm(self.planned_center_l[0]-ind_l[0])
+        self.y_mm_l = self.pixels_to_mm(self.planned_center_l[1]-ind_l[1])
 
-        self.x_mm = my_formatter.format(x_mm)
-        self.y_mm = my_formatter.format(y_mm)
+        ind_r, binary_img_r, enhanced_img_r = self.segmentation_using_com(self.beam_sum_r, self.seg_tresh, stop_callback) 
+        binary_img_array_r = Image.fromarray(binary_img_r)
+        binary_img_qt_r = ImageQt.ImageQt(binary_img_array_r)
+
+        self.x_mm_r = self.pixels_to_mm(self.planned_center_r[0]-ind_r[0])
+        self.y_mm_r = self.pixels_to_mm(self.planned_center_r[1]-ind_r[1])
     
-        return binary_img_qt, self.x_mm, self.y_mm, self.avr_ant_err, self.target_err
+        self.y_mm_avg = self.average_anterior_err(self.y_mm_l, self.y_mm_r)
+        self.target_err = self.targetting_err(self.x_mm_l, self.x_mm_r, self.y_mm_avg) 
+
+        x_mm_l = my_formatter.format(self.x_mm_l)
+        y_mm_l = my_formatter.format(self.y_mm_l)
+        x_mm_r = my_formatter.format(self.x_mm_r)
+        y_mm_r = my_formatter.format(self.y_mm_r)
+        avr_ant_err = my_formatter.format(self.y_mm_avg)
+        target_err = my_formatter.format(self.target_err)
+
+        return binary_img_qt_l, binary_img_qt_r, x_mm_l, y_mm_l, x_mm_r, y_mm_r, avr_ant_err, target_err
         
     def average_anterior_err(self, y1, y2):
         """
         calculate average anterior error
         """
         avr_ant_err =  (y1 + y2)/2
-        avr_ant_err_format = my_formatter.format(avr_ant_err)
-
-        return avr_ant_err, avr_ant_err_format
+        return avr_ant_err
        
     def targetting_err(self, x, y, z):
         """
         total targetting error (x2+y2+z2)kök
-        """
-        avr_ant_err, avr_ant_err_format = self.average_anterior_err(z, z)
-        z = avr_ant_err
-       
+        """ 
         target_err = (math.sqrt((x*x)+(y*y)+(z*z)))
-        target_err = my_formatter.format(target_err)
-        
-        return target_err, avr_ant_err_format
+        return target_err
     
     def stop_flag(self):
         """
@@ -187,52 +194,76 @@ class Model():
         px,py = self.center_of_mass(ref_img_binary, stop_callback)
         return px,py
 
-    def find_ref_points(self, bin_img, stop_callback):
-        ref_points = []
-        w = 100
+    def cut_ref_images(self, img):
+        """
+        [00]#####[01]#####[02]#####[03]#####[04]
+        ##                ##                ## 
+        ##                ##                ##
+        [10]              [12]              [14]
+        ##                ##                ##
+        ##                ##                ##
+        [20]#####[21]#####[22]#####[23]#####[24]
+        """
+        coordinates = []
+        w = img.shape[1]//8
         v = w//2
-        width = bin_img.shape[1]
-        height = bin_img.shape[0]
-        midpx = bin_img.shape[0]//2
-        midpy = bin_img.shape[1]//2
-        im00 = bin_img[0:w,0:w]
-        im01 = bin_img[0:w,midpx-v:midpx+v]
-        im02 = bin_img[0:w,-w:]
-        im10 = bin_img[midpy-v:midpy+v,0:w]
-        im11 = bin_img[midpy-v:midpy+v,midpx-v:midpx+v]
-        im12 = bin_img[midpy-v:midpy+v,-w:]
-        im20 = bin_img[-w:,0:w]
-        im21 = bin_img[-w:,midpx-v:midpx+v]
-        im22 = bin_img[-w:,-w:]
-        
-        ref_px00, ref_py00 = self.center_of_mass(im00, stop_callback)
-        ref_px01, ref_py01 = self.center_of_mass(im01, stop_callback)
-        ref_px02, ref_py02 = self.center_of_mass(im02, stop_callback)
-        ref_px10, ref_py10 = self.center_of_mass(im10, stop_callback)
-        #ref_px11, ref_py11 = center_of_mass(im11)
-        ref_px12, ref_py12 = self.center_of_mass(im12, stop_callback)
-        ref_px20, ref_py20 = self.center_of_mass(im20, stop_callback)
-        ref_px21, ref_py21 = self.center_of_mass(im21, stop_callback)
-        ref_px22, ref_py22 = self.center_of_mass(im22, stop_callback)
+        height= img.shape[0]
+        midpy = img.shape[0]//2
+        width = img.shape[1]
+        xqtr1 = img.shape[1]//4
+        midpx = img.shape[1]//2
+        xqtr3 = 3*img.shape[1]//4
 
-        ref_p00 = (ref_px00, ref_py00)
-        ref_p01 = (midpx-v + ref_px01, ref_py01)
-        ref_p02 = (width-w + ref_px02, ref_py02)
-        ref_p10 = (ref_px10, midpy-v + ref_py10)
-        #ref_p11 = 
-        ref_p12 = (width-w + ref_px12, midpy-v + ref_py12)
-        ref_p20 = (ref_px20, height-w + ref_py20)
-        ref_p21 = (midpx-v + ref_px21, height-w + ref_py21)
-        ref_p22 = (width-w + ref_px22, height-w + ref_py22)
-        ref_points = [ref_p00,ref_p01,ref_p02,ref_p10,ref_p12,ref_p20,ref_p21,ref_p22]
+        im00 = img[0:w,0:w]#
+        im01 = img[0:w,xqtr1-v:xqtr1+v]#
+        im02 = img[0:w,midpx-v:midpx+v]#
+        im03 = img[0:w,xqtr3-v:xqtr3+v]#
+        im04 = img[0:w,-w:]#
+        coordinates.append([0,0])
+        coordinates.append([xqtr1-v,0])
+        coordinates.append([midpx-v,0])
+        coordinates.append([xqtr3-v,0])
+        coordinates.append([width-w,0])
+
+        im10 = img[midpy-v:midpy+v,0:w]#
+        im12 = img[midpy-v:midpy+v,midpx-v:midpx+v]#
+        im14 = img[midpy-v:midpy+v,-w:]#
+        coordinates.append([0,midpy-v])
+        coordinates.append([midpx-v,midpy-v])
+        coordinates.append([width-w,midpy-v])
+
+        im20 = img[-w:,0:w]#
+        im21 = img[-w:,xqtr1-v:xqtr1+v]#
+        im22 = img[-w:,midpx-v:midpx+v]#
+        im23 = img[-w:,xqtr3-v:xqtr3+v]#
+        im24 = img[-w:,-w:]#
+        coordinates.append([0,height-w])
+        coordinates.append([xqtr1-v,height-w])
+        coordinates.append([midpx-v,height-w])
+        coordinates.append([xqtr3-v,height-w])
+        coordinates.append([width-w,height-w])
+
+        ref_images=[im00,im01,im02,im03,im04,im10,im12,im14,im20,im21,im22,im23,im24]
+        return ref_images,coordinates
+
+    def find_ref_points(self, img, stop_callback):
+        refp_img_list, cut_coords=self.cut_ref_images(img)
+        ref_points = []
+        for i,refp_img in enumerate(refp_img_list):
+            enh_img = self.enhance_ref_img(refp_img)
+            bin_img = self.segment_ref_img(enh_img)
+            ref_px, ref_py = self.center_of_mass(bin_img, stop_callback)
+            ref_p= (cut_coords[i][0]+ref_px,cut_coords[i][1]+ref_py)
+            ref_points.append(ref_p)
+        print(ref_points)
         return ref_points
 
-    def draw_ref_points(self, bin_img, ref_points):
-        drawing_img = utils.bool2rgb(bin_img)
+    def draw_ref_points(self, img, ref_points):
+        drawing_img = utils.gray2rgb(utils.np2gray(img))
         for p in ref_points:
             drawing_img = utils.draw_ref_point(drawing_img,p)	
         return drawing_img
-
+    """
     def draw_ref_lines(self, drawing_img, ref_points):
         utils.draw_ref_line_g(drawing_img,[ref_points[1],ref_points[6]])
         utils.draw_ref_line_g(drawing_img,[ref_points[3],ref_points[4]])
@@ -243,19 +274,82 @@ class Model():
         intersect2 = utils.get_intersect(ref_points[0],ref_points[7],ref_points[2],ref_points[5])
         utils.draw_ref_point(drawing_img,intersect2)	
         return drawing_img, intersect1, intersect2
+    """
+    def draw_ref_lines_2(self, drawing_img,ref_points):
+        """
+        [0]#####[1]#####[2]#####[3]#####[4]
+        ##       I      ##       I       ## 
+        ##       I      ##       I       ##
+        [5]------+------[6]------+------[7]
+        ##       I      ##       I       ##
+        ##       I      ##       I       ##
+        [8]#####[9]####[10]#####[11]####[12]
+        """
+        utils.draw_ref_line_g(drawing_img,[ref_points[1],ref_points[9]])
+        utils.draw_ref_line_g(drawing_img,[ref_points[5],ref_points[6]])
+        intersect1 = utils.get_intersect(ref_points[1],ref_points[9],ref_points[5],ref_points[6])
+        utils.draw_ref_point(drawing_img,intersect1)
 
-    def find_and_draw_ref_points(self, ref_img, count, ref_point_thresh, stop_callback):
+        utils.draw_ref_line_y(drawing_img,[ref_points[0],ref_points[10]])
+        utils.draw_ref_line_y(drawing_img,[ref_points[2],ref_points[8]])
+        intersect2 = utils.get_intersect(ref_points[0],ref_points[10],ref_points[2],ref_points[8])
+        utils.draw_ref_point(drawing_img,intersect2)	
+
+        utils.draw_ref_line_g(drawing_img,[ref_points[3],ref_points[11]])
+        utils.draw_ref_line_g(drawing_img,[ref_points[6],ref_points[7]])
+        intersect3 = utils.get_intersect(ref_points[3],ref_points[11],ref_points[6],ref_points[7])
+        utils.draw_ref_point(drawing_img,intersect3)
+        utils.draw_ref_line_y(drawing_img,[ref_points[2],ref_points[12]])
+        utils.draw_ref_line_y(drawing_img,[ref_points[4],ref_points[10]])
+        intersect4 = utils.get_intersect(ref_points[2],ref_points[12],ref_points[4],ref_points[10])
+        utils.draw_ref_point(drawing_img,intersect4)	
+        return drawing_img, intersect1, intersect2, intersect3, intersect4
+
+    def draw_img_borders(self, drawing_img,ref_points):
+        """
+        [0]#####[1]#####[2]#####[3]#####[4]
+        ##   ________   ##   ________   ## 
+        ##  |        |  ##  |        |  ##
+        [5] |        |  [6] |        |  [7]
+        ##  |________|  ##  |________|  ##
+        ##              ##              ##
+        [8]#####[9]####[10]#####[11]####[12]
+        """
+        t=60
+        top_left_corner_1= (ref_points[0][0]+t,ref_points[0][1]+t)
+        bottom_right_corner_1= (ref_points[10][0]-t,ref_points[10][1]-t)
+        points1=[top_left_corner_1,bottom_right_corner_1]
+        drawing_img = utils.draw_rectangle(drawing_img, points1)	
+        top_left_corner_2= (ref_points[2][0]+t,ref_points[2][1]+t)
+        bottom_right_corner_2= (ref_points[12][0]-t,ref_points[12][1]-t)
+        points2=[top_left_corner_2,bottom_right_corner_2]
+        drawing_img = utils.draw_rectangle(drawing_img, points2)	
+        return drawing_img, points1, points2
+
+    def gcoords2bcoords(self, borders, intersect1, intersect2, intersect3, intersect4):
+        planned_center_1 = tuple(0.5*np.array(intersect1) + 0.5*np.array(intersect2) - borders[0][0])
+        planned_center_2 = tuple(0.5*np.array(intersect3) + 0.5*np.array(intersect4) - borders[1][0])
+        return planned_center_1, planned_center_2
+
+    def find_and_draw_ref_points(self, ref_img, count, stop_callback):
         ref_img_norm = (1/count)*ref_img
-        ref_img_enhanced = self.enhance_refs(ref_img_norm)
-        ref_img_binary = ref_img_enhanced > int(ref_point_thresh)
-        ref_points = self.find_ref_points(ref_img_binary, stop_callback)
-        drawing_img = self.draw_ref_points(ref_img_binary, ref_points)
-        drawing_img, intersect1, intersect2 = self.draw_ref_lines(drawing_img,ref_points)
+        ref_points = self.find_ref_points(ref_img_norm, stop_callback)
+        drawing_img = self.draw_ref_points(ref_img_norm, ref_points)
+        drawing_img, intersect1, intersect2, intersect3, intersect4 = self.draw_ref_lines_2(drawing_img,ref_points)
+        drawing_img, borders1, borders2 = self.draw_img_borders(drawing_img,ref_points)
+        borders = [borders1, borders2]
+        planned_center_1, planned_center_2 = self.gcoords2bcoords(borders, intersect1, intersect2, intersect3, intersect4)
         drawing_img = utils.show_images_in_designer(drawing_img)
         #cv2.imwrite(os.path.join(self.path, "ref_point_images.jpg"), drawing_img.astype(np.uint8))
 
-        return drawing_img, intersect1, intersect2
+        return drawing_img, planned_center_1, planned_center_2, borders
     
+    def cut_images(self,img,border):
+        (x1,y1) = border[0]
+        (x2,y2) = border[1]
+        cut_img = img[y1:y2,x1:x2]
+        return cut_img   
+
     def sum_video(self, progress_callback, state_callback, stop_callback):
 
         print(self.exp_time)
@@ -290,9 +384,8 @@ class Model():
                     if(time>5):
                         state = 'bgnd_calc'
                         #px,py = find_plan_point(ref_img,count) #normalize edilmiş bgnd
-                        self.drawing_img, intersect1, intersect2 = self.find_and_draw_ref_points(ref_img,count,  self.ref_point_thresh, stop_callback)
+                        self.drawing_img, self.planned_center_l, self.planned_center_r, borders = self.find_and_draw_ref_points(ref_img, count, stop_callback)
                         state_callback.emit(self.drawing_img)
-                        self.planned_center = tuple(0.5*np.array(intersect1) + 0.5*np.array(intersect2))
                         #print("Ref points are calculated as: x=%d, y=%d",px,py)
                 elif(state == 'bgnd_calc'):
                     background += image[:,:,0]
@@ -318,11 +411,16 @@ class Model():
                 break
 
         self.beam_sum = beam_sum
+        self.beam_sum_l = self.cut_images(beam_sum,borders[0])
+        self.beam_sum_r = self.cut_images(beam_sum,borders[1])
 
-        beam_sum_img =utils.gray2rgb(utils.np2gray(beam_sum))
-        beam_sum_img = utils.show_images_in_designer(beam_sum_img)
+        beam_sum_l_img =utils.gray2rgb(utils.np2gray(self.beam_sum_l))
+        beam_sum_l_img = utils.show_images_in_designer(beam_sum_l_img)
 
-        return beam_sum_img
+        beam_sum_r_img =utils.gray2rgb(utils.np2gray(self.beam_sum_r))
+        beam_sum_r_img = utils.show_images_in_designer(beam_sum_r_img)
+
+        return beam_sum_l_img, beam_sum_r_img
     
     def segmentation_using_com(self, image, seg_thresh, stop_callback): 
         enhanced_img = self.enhance_sphere(image)
@@ -332,7 +430,7 @@ class Model():
         
         thresh = enhanced_img>cut_off 
         ind2 = self.center_of_mass(thresh, stop_callback) 
-        draft2 = utils.draw_circle(image,ind2,120)
+        #draft2 = utils.draw_circle(image,ind2,120)
         return ind2, thresh, enhanced_img
     
     def enhance_sphere(self, image):
@@ -346,6 +444,16 @@ class Model():
         closed_img = closing(median_img, disk(9))
         gauss_img = cv2.GaussianBlur(closed_img,(3,3),cv2.BORDER_DEFAULT)
         return gauss_img
+
+    def enhance_ref_img(self, image):
+        median_img = cv2.medianBlur(image, 5)
+        closed_img = closing(median_img, disk(9))
+        gauss_img = cv2.GaussianBlur(closed_img,(3,3),cv2.BORDER_DEFAULT)
+        return gauss_img
+
+    def segment_ref_img(self, image):
+        thresh = threshold_otsu(image)
+        return image>thresh
 
     def center_of_mass(self, binary_img, stop_callback):
         try:
