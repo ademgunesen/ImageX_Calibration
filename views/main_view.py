@@ -143,8 +143,8 @@ class MainView(QMainWindow):
             
             self._ui.tabwidget.setCurrentIndex(1)
 
-            self._ui.g_image_1.setPixmap(beam_sum_img[0])
-            self._ui.g_image_2.setPixmap(beam_sum_img[1])
+            self._ui.g_image_1.setPixmap(beam_sum_img[1])
+            self._ui.g_image_2.setPixmap(beam_sum_img[0])
 
             self._ui.select_video.setEnabled(True)
             self._ui.run_video.setEnabled(True)
@@ -173,20 +173,20 @@ class MainView(QMainWindow):
         Displaying images and values according to the selected threshold value
         """
         self._ui.menuFile.setEnabled(True)
-        self._ui.g_image_3.setPixmap(QPixmap.fromImage(list[0]))
-        self._ui.g_image_4.setPixmap(QPixmap.fromImage(list[1]))
+        self._ui.g_image_3.setPixmap(QPixmap.fromImage(list[1]))
+        self._ui.g_image_4.setPixmap(QPixmap.fromImage(list[0]))
 
         #image1 Threshold Results
-        self._ui.T1_label_3.setText(str(list[3]) + 'mm')
-        self._ui.T1_label_4.setText(str(list[2]) + 'mm')
+        self._ui.T1_label_3.setText(str(list[5]) + 'mm')
+        self._ui.T1_label_4.setText(str(list[4]) + 'mm')
         #image2 Trhreshold Results
-        self._ui.T2_label_3.setText(str(list[5])+ 'mm')
-        self._ui.T2_label_4.setText(str(list[4])+ 'mm')
+        self._ui.T2_label_3.setText(str(list[3])+ 'mm')
+        self._ui.T2_label_4.setText(str(list[2])+ 'mm')
         #error
-        self._ui.ei_label_1.setText(str(list[2]))
-        self._ui.ei_label_2.setText(str(list[3]))
-        self._ui.ei_label_3.setText(str(list[4]))
-        self._ui.ei_label_4.setText(str(list[5]))
+        self._ui.ei_label_1.setText(str(list[4]))
+        self._ui.ei_label_2.setText(str(list[5]))
+        self._ui.ei_label_3.setText(str(list[2]))
+        self._ui.ei_label_4.setText(str(list[3]))
         #average anterior error
         self._ui.ei_label_5.setText(str(list[6]))
         #total target error (pisagor)
