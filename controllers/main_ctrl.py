@@ -28,16 +28,12 @@ class MainController():
         else:
             self._view.warning_video()
 
-    def play_video_controller(self, exp_time, beam_thresh, ref_point_thresh):
+    def play_video_controller(self, beam_thresh):
         """
         After pressing the run button, it creates a thread to run the sum_video in the model, then goes to the view and shows the results.
         """
         self._model.running = True
-
-        self._model.set_exp_time(exp_time)
         self._model.set_beam_thresh(beam_thresh)
-        self._model.set_res_point_thresh(ref_point_thresh)
-
         worker = Worker2(self._model.sum_video)
         worker.signals.result.connect(self._view.show_video_images)
         worker.signals.finished.connect(self._view.thread_complete)
