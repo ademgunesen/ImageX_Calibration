@@ -92,9 +92,7 @@ class Model():
 
         #SET VARIABLES
         self.Path = ' '
-        self.exp_time = 0
         self.beam_thresh = 0
-        self.ref_point_thresh = 0
 
         self.beam_sum = 0
         self.beam_sum_l = 0
@@ -116,7 +114,7 @@ class Model():
         self.running = True
 
         self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+        #print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
     
     def first_video_image(self, stop_callback):
         """
@@ -166,7 +164,7 @@ class Model():
         """
         calculate average anterior error
         """
-        avr_ant_err =  (y1 + y2)/2
+        avr_ant_err =  abs(y1 + y2)/2
         return avr_ant_err
        
     def targetting_err(self, x, y, z):
@@ -255,7 +253,6 @@ class Model():
             ref_px, ref_py = self.center_of_mass(bin_img, stop_callback)
             ref_p= (cut_coords[i][0]+ref_px,cut_coords[i][1]+ref_py)
             ref_points.append(ref_p)
-        print(ref_points)
         return ref_points
 
     def draw_ref_points(self, img, ref_points):
@@ -351,11 +348,6 @@ class Model():
         return cut_img   
 
     def sum_video(self, progress_callback, state_callback, stop_callback):
-
-        print(self.exp_time)
-        print(self.beam_thresh)
-        print(self.ref_point_thresh)
-
         vidObj = cv2.VideoCapture(self.Path) # Path to video file
         count = 0	# Used as counter variable
         time = 0	# in seconds
@@ -373,12 +365,16 @@ class Model():
         av_hist3 = []
         m_av_hist = []
         total_frame = vidObj.get(cv2.CAP_PROP_FRAME_COUNT)
+
+        fps = vidObj.get(cv2.CAP_PROP_FPS)
+        exp_time = 1000/fps
         while (success):
             if(success):
                 count += 1
                 progressbar_count = ((count/total_frame)*100)#for progress bar
                 progress_callback.emit(progressbar_count)
-                time = count*int(self.exp_time)/1000
+
+                time = count*int(exp_time)/1000
                 if(state == 'find_ref_point'):
                     ref_img += image[:,:,0]
                     if(time>5):
@@ -475,14 +471,8 @@ class Model():
     def set_path(self, path_name):    
         self.Path = path_name
 
-    def set_exp_time(self, exp_time):    
-        self.exp_time = exp_time
-
     def set_beam_thresh(self, beam_thresh):    
         self.beam_thresh = beam_thresh
-
-    def set_res_point_thresh(self, ref_point_thresh):    
-        self.ref_point_thresh = ref_point_thresh
 
     def set_seg_tresh(self, seg_tresh):    
         self.seg_tresh = seg_tresh
