@@ -19,9 +19,7 @@ class MainView(QMainWindow):
 
         self._ui.select_video.clicked.connect(self._controller.select_video_controller)
         self._ui.run_video.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self._ui.run_video.clicked.connect(lambda: self._controller.play_video_controller(self._ui.combo_box_3.currentText(),
-                                                                                        self._ui.combo_box_1.currentText(),
-                                                                                        self._ui.combo_box_2.currentText()))
+        self._ui.run_video.clicked.connect(lambda: self._controller.play_video_controller(self._ui.combo_box_1.currentText()))
         self._ui.stop_video.setIcon(self.style().standardIcon(QStyle.SP_MediaStop))
         self._ui.stop_video.clicked.connect(self._controller.stop_video_controller)
         self._ui.clear.clicked.connect(self.clear_all_results) 
@@ -44,9 +42,6 @@ class MainView(QMainWindow):
 
         #set default variables
         self._ui.combo_box_1.setCurrentIndex(4)
-        self._ui.combo_box_2.setCurrentIndex(5)
-        self._ui.combo_box_3.setCurrentIndex(1)
-
         # determine if application is a script file or frozen exe
         image_name = 'Spinner.gif'
         if getattr(sys, 'frozen', False):
@@ -92,8 +87,6 @@ class MainView(QMainWindow):
         self._ui.menuFile.setEnabled(False)
 
         self._ui.combo_box_1.setEnabled(False)
-        self._ui.combo_box_2.setEnabled(False)
-        self._ui.combo_box_3.setEnabled(False)
         
         self._ui.player.setPixmap(self._controller.get_first_frame())
         #self._ui.player.setPixmap(self._controller.get_second_frame())
@@ -103,7 +96,6 @@ class MainView(QMainWindow):
         It shows the things that need to change on the screen when the stop button is pressed.
         """
         if common_flag == 0:
-            print(common_flag)
             self._ui.progressbar.setValue(0)
 
             self._ui.select_video.setEnabled(True)
@@ -113,13 +105,10 @@ class MainView(QMainWindow):
             self._ui.menuFile.setEnabled(False)
 
             self._ui.combo_box_1.setEnabled(True)
-            self._ui.combo_box_2.setEnabled(True)
-            self._ui.combo_box_3.setEnabled(True)
 
             self.clear_all_results()
 
         else:
-            print(common_flag)
             self._ui.progressbar.setValue(0)
 
             self._ui.select_video.setEnabled(True)
@@ -129,8 +118,6 @@ class MainView(QMainWindow):
             self._ui.menuFile.setEnabled(False)
 
             self._ui.combo_box_1.setEnabled(True)
-            self._ui.combo_box_2.setEnabled(True)
-            self._ui.combo_box_3.setEnabled(True)
 
             self.clear_all_results()
             self.warning_video_taken()
@@ -152,8 +139,6 @@ class MainView(QMainWindow):
             self._ui.execute.setEnabled(True) 
 
             self._ui.combo_box_1.setEnabled(True)
-            self._ui.combo_box_2.setEnabled(True)
-            self._ui.combo_box_3.setEnabled(True)
 
     def after_5_sn_img(self, img):
         """
@@ -281,7 +266,7 @@ class MainView(QMainWindow):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("About ImageX Calibration")
-        msg.setText("ImageX Calibration 1.1\n\nCreated by Vivente Soft\nZeynep iskenderoğlu")
+        msg.setText("ImageX Calibration 1.2\n\nCreated by Vivente Soft\nZeynep iskenderoğlu")
         msg.setStandardButtons(QMessageBox.Ok)
 
         x = msg.exec_()
