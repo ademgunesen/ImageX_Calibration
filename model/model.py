@@ -164,7 +164,7 @@ class Model():
         """
         calculate average anterior error
         """
-        avr_ant_err =  abs(y1 + y2)/2
+        avr_ant_err =  (abs(y1) + abs(y2))/2
         return avr_ant_err
        
     def targetting_err(self, x, y, z):
