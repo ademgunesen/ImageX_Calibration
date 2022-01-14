@@ -26,8 +26,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1501</width>
-      <height>951</height>
+      <width>1511</width>
+      <height>931</height>
      </rect>
     </property>
     <property name="font">
@@ -165,13 +165,13 @@
        <number>0</number>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>400</x>
         <y>800</y>
         <width>151</width>
-        <height>51</height>
+        <height>57</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -556,7 +556,7 @@
        </font>
       </property>
       <property name="title">
-       <string>Image 1</string>
+       <string>A/L IMAGE</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
@@ -592,7 +592,7 @@
        </font>
       </property>
       <property name="title">
-       <string>Image 2</string>
+       <string>A/S IMAGE</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
@@ -628,7 +628,7 @@
        </font>
       </property>
       <property name="title">
-       <string>Image 1 Threshold Area</string>
+       <string>A/L Image Threshold Area</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
@@ -664,7 +664,7 @@
        </font>
       </property>
       <property name="title">
-       <string>Image 2 Threshold Area</string>
+       <string>A/S Image Threshold Area</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
